@@ -11,11 +11,15 @@ namespace Workvia.Core.Entities
     {
         [Key]
         public Guid ShiftID { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Employee id can`t be blank")]
         public Guid EmployeeID { get; set; }
-        [Required]
+
+        // Add data fields validation
+        [Required(ErrorMessage = "Start time can`t be blank")]
         public DateTime StartTime { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "End time can`t be blank")]
         public DateTime EndTime { get; set; }
     }
 }

@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Workvia.WebAPI</name>
+    </assembly>
+    <members>
+        <member name="M:Workvia.WebAPI.Controllers.AccountController.PostRegister(Workvia.Core.DTO.RegisterDTO)">
+            <summary>
+            Register new user
+            </summary>
+            <param name="registerDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Workvia.WebAPI.Controllers.AccountController.PostLogin(Workvia.Core.DTO.LoginDTO)">
+            <summary>
+            Login user
+            </summary>
+            <param name="loginDTO"></param>
+            <param name="email"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Workvia.WebAPI.Controllers.AccountController.GetLogout">
+            <summary>
+            Logout
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Workvia.WebAPI.Controllers.AccountController.IsEmailAlreadyRegister(System.String)">
+            <summary>
+            Is email already registered
+            </summary>
+            <param name="email"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Workvia.WebAPI.Controllers.ShiftsController.GetShifts">
+            <summary>
+            Get all shifts
+            </summary>
+            <param></param>
+            <returns></returns>
+        </member>
+        <member name="M:Workvia.WebAPI.Controllers.ShiftsController.GetShift(System.Guid)">
+            <summary>
+            Get all shifts of specified employee
+            </summary>
+            <param name="emploeeId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Workvia.WebAPI.Controllers.ShiftsController.PutShift(System.Guid,Workvia.Core.Entities.Shift)">
+            <summary>
+            Update shift
+            </summary>
+            <param name="id">Guid of specified shift</param>
+            <param name="shift">New shift data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Workvia.WebAPI.Controllers.ShiftsController.PostShift(Workvia.Core.Entities.Shift)">
+            <summary>
+            Add new shift
+            </summary>
+            <param name="shift"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Workvia.WebAPI.Controllers.ShiftsController.DeleteShift(System.Guid)">
+            <summary>
+            Delete shift by id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Program">
+            <summary>
+            Auto-generated public partial Program class for top-level statement apps.
+            </summary>
+        </member>
+    </members>
+</doc>
