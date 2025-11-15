@@ -40,6 +40,14 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 .AddUserStore<UserStore<ApplicationUser, ApplicationRole, ApplicationDbContext, Guid>>()
 .AddRoleStore<RoleStore<ApplicationRole, ApplicationDbContext, Guid>>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("http://localhost:4200");
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -53,7 +61,7 @@ app.UseHsts();
 app.UseHttpsRedirection();
 
 app.UseRouting();
-// add CORS
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
