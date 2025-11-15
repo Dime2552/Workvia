@@ -16,7 +16,6 @@
             Login user
             </summary>
             <param name="loginDTO"></param>
-            <param name="email"></param>
             <returns></returns>
         </member>
         <member name="M:Workvia.WebAPI.Controllers.AccountController.GetLogout">
