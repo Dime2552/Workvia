@@ -28,7 +28,7 @@ namespace Workvia.WebAPI.Controllers
         /// <param name="registerDTO"></param>
         /// <returns></returns>
         [HttpPost("register")]
-        public async Task<ActionResult<ApplicationUser>> PostRegister(RegisterDTO registerDTO)
+        public async Task<ActionResult<UserDTO>> PostRegister(RegisterDTO registerDTO)
         {
             //Validation
             if (ModelState.IsValid == false)
@@ -62,7 +62,7 @@ namespace Workvia.WebAPI.Controllers
                 // Sign in
                 await _signInManager.SignInAsync(user, isPersistent: false);
 
-                return Ok(user);
+                return Ok(new UserDTO { Id = user.Id, Email = user.Email, Name = user.PersonName });
             }
             else
             {
@@ -78,7 +78,7 @@ namespace Workvia.WebAPI.Controllers
         /// <returns></returns>
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<ActionResult<ApplicationUser>> PostLogin(LoginDTO loginDTO)
+        public async Task<ActionResult<UserDTO>> PostLogin(LoginDTO loginDTO)
         {
             //Validation
             if (ModelState.IsValid == false)
@@ -98,7 +98,7 @@ namespace Workvia.WebAPI.Controllers
                     return NoContent();
                 }
 
-                return Ok(new { personName = user.PersonName, email = user.Email });
+                return Ok(new UserDTO { Id = user.Id, Email = user.Email, Name = user.PersonName });
             }
             else
             {
