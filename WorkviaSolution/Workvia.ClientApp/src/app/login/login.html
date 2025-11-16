@@ -1,0 +1,39 @@
+<div>
+    <div>
+        <h2>Login</h2>
+        
+        <form [formGroup]="loginForm" (ngSubmit)="loginSubmited()">
+
+            <div> <!-- email -->
+                <div>
+                    <label for="email">Email</label>
+                </div>
+                <div>
+                    <input type="text" id="email" formControlName="email"/>
+                    @if ((login_emailControl.touched || isLoginFormSubmited) && (login_emailControl.errors?.['required'])) {
+                        <span>Email can`t be blank</span>
+                    }
+                </div>
+            </div>
+
+            <div> <!-- password -->
+                <div>
+                    <label for="password">Password</label>
+                </div>
+                <div>
+                    <input type="password" id="password" formControlName="password"/>
+                    @if ((login_passwordControl.touched || isLoginFormSubmited) && (login_passwordControl.errors?.['required'])) {
+                        <span>Password can`t be blank</span>
+                    }
+                </div>
+            </div>
+
+            <div> <!-- submit -->
+                <div> </div>
+                <div>
+                    <button type="submit">Login</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
