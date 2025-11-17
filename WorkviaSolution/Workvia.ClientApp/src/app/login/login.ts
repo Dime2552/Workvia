@@ -33,12 +33,14 @@ export class Login {
     this.isLoginFormSubmited = true;
 
     this.accountService.postLogin(this.loginForm.value).subscribe({
-      next: (response: User) => {
+      next: (response: any) => {
         console.log(response);
 
         this.isLoginFormSubmited = false;
 
         this.accountService.currentUserName = response.name;
+
+        localStorage["token"] = response.token;
 
         //this.router.navigate(['/home']);
 

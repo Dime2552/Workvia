@@ -17,7 +17,7 @@ export class App {
     this.accountService.getLogout().subscribe({
       next: () => {
         this.accountService.currentUserName = null;
-
+        localStorage.removeItem("token");
         this.router.navigate(['/login']);
       },
       error: (error) => {

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Workvia.Core.DTO;
 using Workvia.Core.Identity;
+using Workvia.Core.ServiceContracts;
 
 namespace Workvia.WebAPI.Controllers
 {
@@ -14,12 +15,14 @@ namespace Workvia.WebAPI.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IJwtService _jwtService;
 
-        public AccountController(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, SignInManager<ApplicationUser> signInManager, IJwtService jwtService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
+            _jwtService = jwtService;
         }
 
         /// <summary>
@@ -59,9 +62,6 @@ namespace Workvia.WebAPI.Controllers
                     await _userManager.AddToRoleAsync(user, "User");
                 }
 
-                // Sign in
-                await _signInManager.SignInAsync(user, isPersistent: false);
-
                 return Ok(new UserDTO { Id = user.Id, Email = user.Email, Name = user.PersonName });
             }
             else
@@ -78,7 +78,7 @@ namespace Workvia.WebAPI.Controllers
         /// <returns></returns>
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<ActionResult<UserDTO>> PostLogin(LoginDTO loginDTO)
+        public async Task<ActionResult<AuthenticationResponse>> PostLogin(LoginDTO loginDTO)
         {
             //Validation
             if (ModelState.IsValid == false)
@@ -92,13 +92,18 @@ namespace Workvia.WebAPI.Controllers
             if (result.Succeeded)
             {
                 ApplicationUser? user = await _userManager.FindByEmailAsync(loginDTO.Email);
+                var role = await _userManager.GetRolesAsync(user);
 
                 if (user == null)
                 {
                     return NoContent();
                 }
 
-                return Ok(new UserDTO { Id = user.Id, Email = user.Email, Name = user.PersonName });
+                await _signInManager.SignInAsync(user, isPersistent: false);
+
+                var authenticationResponse = _jwtService.CreateJwt(user, role.FirstOrDefault("User"));
+
+                return Ok(authenticationResponse);
             }
             else
             {

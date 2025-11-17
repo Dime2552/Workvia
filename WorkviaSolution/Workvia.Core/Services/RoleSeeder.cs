@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using Workvia.Core.Identity;
 
-namespace Workvia.WebAPI.Services
+namespace Workvia.Core.Services
 {
     public static class RoleSeeder
     {

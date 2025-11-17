@@ -20,8 +20,8 @@ export class Account {
     return this.httpClient.post<User>(`${API_BASE_URL}/register`, registerUser);
   }
 
-  public postLogin(loginUser: LoginUser): Observable<User>{
-    return this.httpClient.post<User>(`${API_BASE_URL}/login`, loginUser);
+  public postLogin(loginUser: LoginUser): Observable<any>{
+    return this.httpClient.post<any>(`${API_BASE_URL}/login`, loginUser);
   }
 
   public getLogout(): Observable<string>{

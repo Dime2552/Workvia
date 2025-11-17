@@ -1,73 +1,84 @@
-<div>
-    <div>
-        <h2>Register</h2>
-        
-        <form [formGroup]="registerForm" (ngSubmit)="registerSubmited()">
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h3 class="text-center mb-4">Register</h3>
 
-            
-            <div> <!-- personName -->
-                <div>
-                    <label for="personName">Person name</label>
-                </div>
-                <div>
-                    <input type="text" id="personName" formControlName="personName"/>
-                    @if ((register_personNameControl.touched || isRegisterFormSubmited) && (register_personNameControl.errors?.['required'])) {
-                        <span>Person name can`t be blank</span>
-                    }
-                </div>
+          <form [formGroup]="registerForm" (ngSubmit)="registerSubmited()">
+
+            <!-- Person Name -->
+            <div class="mb-3">
+              <label for="personName" class="form-label">Person Name</label>
+              <input type="text" id="personName" class="form-control"
+                     formControlName="personName">
+
+              @if ((register_personNameControl.touched || isRegisterFormSubmited)
+                 && register_personNameControl.errors?.['required']) {
+                  <div class="text-danger small mt-1">
+                    Person name can’t be blank
+                  </div>
+              }
             </div>
 
-            <div> <!-- email -->
-                <div>
-                    <label for="email">Email</label>
-                </div>
-                <div>
-                    <input type="text" id="email" formControlName="email"/>
-                    @if ((register_emailControl.touched || isRegisterFormSubmited) && (register_emailControl.errors?.['required'])) {
-                        <span>Email can`t be blank</span>
-                    }
-                </div>
+            <!-- Email -->
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="text" id="email" class="form-control"
+                     formControlName="email">
+
+              @if ((register_emailControl.touched || isRegisterFormSubmited)
+                 && register_emailControl.errors?.['required']) {
+                  <div class="text-danger small mt-1">
+                    Email can’t be blank
+                  </div>
+              }
             </div>
 
-            <div> <!-- password -->
-                <div>
-                    <label for="password">Password</label>
-                </div>
-                <div>
-                    <input type="password" id="password" formControlName="password"/>
-                    @if ((register_passwordControl.touched || isRegisterFormSubmited) && (register_passwordControl.errors?.['required'])) {
-                        <span>Password can`t be blank</span>
-                    }
-                </div>
+            <!-- Password -->
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" id="password" class="form-control"
+                     formControlName="password">
+
+              @if ((register_passwordControl.touched || isRegisterFormSubmited)
+                 && register_passwordControl.errors?.['required']) {
+                  <div class="text-danger small mt-1">
+                    Password can’t be blank
+                  </div>
+              }
             </div>
 
-            <div> <!-- confirmPassword -->
-                <div>
-                    <label for="confirmPassword">Confirm password</label>
-                </div>
-                <div>
-                    <input type="password" id="confirmPassword" formControlName="confirmPassword"/>
-                    @if ((register_confirmPasswordControl.touched || isRegisterFormSubmited) && (register_confirmPasswordControl.errors?.['required'])) {
-                        <span>Confirm password can`t be blank</span>
-                    }
-                </div>
+            <!-- Confirm Password -->
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">Confirm Password</label>
+              <input type="password" id="confirmPassword" class="form-control"
+                     formControlName="confirmPassword">
+
+              @if ((register_confirmPasswordControl.touched || isRegisterFormSubmited)
+                 && register_confirmPasswordControl.errors?.['required']) {
+                  <div class="text-danger small mt-1">
+                    Confirm password can’t be blank
+                  </div>
+              }
             </div>
 
-            <div> <!-- isAdmin -->
-                <div>
-                    <label for="isAdmin">Is admin</label>
-                </div>
-                <div>
-                    <input type="checkbox" id="isAdmin" formControlName="isAdmin"/>
-                </div>
+            <!-- Is Admin -->
+            <div class="form-check mb-3">
+              <input type="checkbox" id="isAdmin" class="form-check-input"
+                     formControlName="isAdmin">
+              <label for="isAdmin" class="form-check-label">Is Admin</label>
             </div>
 
-            <div> <!-- submit -->
-                <div> </div>
-                <div>
-                    <button type="submit">Register</button>
-                </div>
-            </div>
-        </form>
+            <button class="btn btn-success w-100" type="submit">
+              Register
+            </button>
+
+          </form>
+        </div>
+      </div>
+
     </div>
+  </div>
 </div>

@@ -1,39 +1,51 @@
-<div>
-    <div>
-        <h2>Login</h2>
-        
-        <form [formGroup]="loginForm" (ngSubmit)="loginSubmited()">
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
 
-            <div> <!-- email -->
-                <div>
-                    <label for="email">Email</label>
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h3 class="text-center mb-4">Login</h3>
+
+          <form [formGroup]="loginForm" (ngSubmit)="loginSubmited()">
+
+            <!-- Email -->
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="text" id="email" class="form-control"
+                     formControlName="email">
+
+              @if ((login_emailControl.touched || isLoginFormSubmited)
+                  && login_emailControl.errors?.['required']) {
+                <div class="text-danger small mt-1">
+                  Email can’t be blank
                 </div>
-                <div>
-                    <input type="text" id="email" formControlName="email"/>
-                    @if ((login_emailControl.touched || isLoginFormSubmited) && (login_emailControl.errors?.['required'])) {
-                        <span>Email can`t be blank</span>
-                    }
-                </div>
+              }
             </div>
 
-            <div> <!-- password -->
-                <div>
-                    <label for="password">Password</label>
+            <!-- Password -->
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" id="password" class="form-control"
+                     formControlName="password">
+
+              @if ((login_passwordControl.touched || isLoginFormSubmited)
+                  && login_passwordControl.errors?.['required']) {
+                <div class="text-danger small mt-1">
+                  Password can’t be blank
                 </div>
-                <div>
-                    <input type="password" id="password" formControlName="password"/>
-                    @if ((login_passwordControl.touched || isLoginFormSubmited) && (login_passwordControl.errors?.['required'])) {
-                        <span>Password can`t be blank</span>
-                    }
-                </div>
+              }
             </div>
 
-            <div> <!-- submit -->
-                <div> </div>
-                <div>
-                    <button type="submit">Login</button>
-                </div>
-            </div>
-        </form>
+            <!-- Submit -->
+            <button type="submit" class="btn btn-success w-100">
+              Login
+            </button>
+
+          </form>
+
+        </div>
+      </div>
+
     </div>
+  </div>
 </div>

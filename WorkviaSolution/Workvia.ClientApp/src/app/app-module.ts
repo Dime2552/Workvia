@@ -7,6 +7,7 @@ import { App } from './app';
 import { Register } from './register/register';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { Login } from './login/login';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { Login } from './login/login';
   imports: [
     BrowserModule,
     ReactiveFormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NgbModule
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
