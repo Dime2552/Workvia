@@ -3,7 +3,7 @@
         <a [routerLink]="['/register']">Register</a>
         <a [routerLink]="['/login']">Login</a>
         <a href="#" onclick="return false" (click)="OnLogoutClicked()">Logout</a>
-        <h1>Hi {{accountService.currentUserName}}</h1>
+        <h1>Hi {{authService.currentUserName}}</h1>
     </div>
     <div>
         <router-outlet></router-outlet>

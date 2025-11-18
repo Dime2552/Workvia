@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Account } from '../../../core/services/account';
+import { Authentication } from '../../../core/services/authentication';
 import { User } from '../../../core/models/user';
 
 @Component({
@@ -14,7 +14,7 @@ export class Register {
   registerForm: FormGroup;
   isRegisterFormSubmited: boolean = false;
 
-  constructor(private accountService: Account, private router: Router){
+  constructor(private authService: Authentication, private router: Router){
     this.registerForm = new FormGroup({
       personName: new FormControl(null, [Validators.required]),
       email: new FormControl(null, [Validators.required]),
@@ -47,7 +47,7 @@ export class Register {
   registerSubmited() {
     this.isRegisterFormSubmited = true;
 
-    this.accountService.postRegister(this.registerForm.value).subscribe({
+    this.authService.postRegister(this.registerForm.value).subscribe({
       next: (response: User) => {
         console.log(response);
 

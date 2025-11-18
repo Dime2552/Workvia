@@ -4,10 +4,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { Login } from './features/auth/login/login';
 import { Register } from './features/auth/register/register';
+import { jwtInterceptor } from './core/interceptors/jwt-interceptor';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,12 @@ import { Register } from './features/auth/register/register';
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideHttpClient(withInterceptorsFromDi())
+    provideHttpClient(withInterceptorsFromDi()),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: jwtInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [App]
 })

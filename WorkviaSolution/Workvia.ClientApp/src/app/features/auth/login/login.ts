@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Account } from '../../../core/services/account';
+import { Authentication } from '../../../core/services/authentication';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +13,7 @@ export class Login {
   loginForm: FormGroup;
   isLoginFormSubmited: boolean = false;
 
-  constructor(private accountService: Account, private router: Router){
+  constructor(private authService: Authentication, private router: Router){
     this.loginForm = new FormGroup({
       email: new FormControl(null, [Validators.required]),
       password: new FormControl(null, [Validators.required])
@@ -31,17 +31,21 @@ export class Login {
   loginSubmited() {
     this.isLoginFormSubmited = true;
 
-    this.accountService.postLogin(this.loginForm.value).subscribe({
+    this.authService.postLogin(this.loginForm.value).subscribe({
       next: (response: any) => {
         console.log(response);
 
         this.isLoginFormSubmited = false;
 
-        this.accountService.currentUserName = response.personName;
+        this.authService.currentUserName = response.personName;
 
         localStorage["token"] = response.token;
 
-        //this.router.navigate(['/home']);
+        /*if (this.authService.isAdmin()) {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/employee']);
+        }*/
 
         this.loginForm.reset();
       },
