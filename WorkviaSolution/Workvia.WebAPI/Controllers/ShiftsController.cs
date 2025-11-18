@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,6 @@ namespace Workvia.WebAPI.Controllers
             _context = context;
         }
 
-        // GET: api/Shifts
         /// <summary>
         /// Get all shifts
         /// </summary>
@@ -40,13 +40,13 @@ namespace Workvia.WebAPI.Controllers
             return shifts;
         }
 
-        // GET: api/Shifts/5
         /// <summary>
         /// Get all shifts of specified employee
         /// </summary>
         /// <param name="emploeeId"></param>
         /// <returns></returns>
         [HttpGet("{emploeeId}")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Shift>>> GetShift(Guid emploeeId)
         {
             var shifts = await _context.Shifts.Where(shift => shift.EmployeeID == emploeeId).ToListAsync();
@@ -59,7 +59,6 @@ namespace Workvia.WebAPI.Controllers
             return shifts;
         }
 
-        // PUT: api/Shifts/5
         /// <summary>
         /// Update shift
         /// </summary>
@@ -95,7 +94,6 @@ namespace Workvia.WebAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Shifts
         /// <summary>
         /// Add new shift
         /// </summary>
@@ -108,15 +106,15 @@ namespace Workvia.WebAPI.Controllers
             {
                 return BadRequest();
             }
+            shift.ShiftID = new Guid();
             _context.Shifts.Add(shift);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetShift", new { id = shift.ShiftID }, shift);
         }
 
-        // DELETE: api/Shifts/5
         /// <summary>
-        /// Delete shift by id
+        /// Delete shift
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

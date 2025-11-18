@@ -31,6 +31,7 @@ namespace Workvia.WebAPI.Controllers
         /// <param name="registerDTO"></param>
         /// <returns></returns>
         [HttpPost("register")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<UserDTO>> PostRegister(RegisterDTO registerDTO)
         {
             //Validation

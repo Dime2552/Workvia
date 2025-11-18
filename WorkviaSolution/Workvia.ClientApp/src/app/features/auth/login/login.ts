@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { User } from '../models/user';
-import { Account } from '../services/account';
+import { Account } from '../../../core/services/account';
 
 @Component({
   selector: 'app-login',
@@ -38,7 +37,7 @@ export class Login {
 
         this.isLoginFormSubmited = false;
 
-        this.accountService.currentUserName = response.name;
+        this.accountService.currentUserName = response.personName;
 
         localStorage["token"] = response.token;
 

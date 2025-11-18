@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { RegisterUser } from '../models/register-user';
 import { User } from '../models/user';
@@ -17,7 +17,9 @@ export class Account {
   constructor(private httpClient: HttpClient) {}
 
   public postRegister(registerUser: RegisterUser): Observable<User>{
-    return this.httpClient.post<User>(`${API_BASE_URL}/register`, registerUser);
+    let headers = new HttpHeaders();
+    headers = headers.append("Authorization", `Bearer ${localStorage["token"]}`);
+    return this.httpClient.post<User>(`${API_BASE_URL}/register`, registerUser, {headers: headers});
   }
 
   public postLogin(loginUser: LoginUser): Observable<any>{

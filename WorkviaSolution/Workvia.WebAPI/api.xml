@@ -62,9 +62,15 @@
         </member>
         <member name="M:Workvia.WebAPI.Controllers.ShiftsController.DeleteShift(System.Guid)">
             <summary>
-            Delete shift by id
+            Delete shift
             </summary>
             <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Workvia.WebAPI.Controllers.UsersController.GetEmployees">
+            <summary>
+            Get all employees
+            </summary>
             <returns></returns>
         </member>
         <member name="T:Program">

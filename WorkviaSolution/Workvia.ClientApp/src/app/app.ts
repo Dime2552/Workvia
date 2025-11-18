@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
-import { Account } from './services/account';
-import { Route, Router } from '@angular/router';
+import { Account } from './core/services/account';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +9,7 @@ import { Route, Router } from '@angular/router';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('Workvia.ClientApp');
+  protected readonly title = signal('Workvia');
 
   constructor(public accountService: Account, private router: Router) {}
 

@@ -10,7 +10,7 @@ namespace Workvia.Core.Entities
     public class Shift
     {
         [Key]
-        public Guid ShiftID { get; set; }
+        public Guid? ShiftID { get; set; }
 
         [Required(ErrorMessage = "Employee id can`t be blank")]
         public Guid EmployeeID { get; set; }
