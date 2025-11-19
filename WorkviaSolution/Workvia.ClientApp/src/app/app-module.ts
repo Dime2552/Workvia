@@ -9,12 +9,14 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { Login } from './features/auth/login/login';
 import { Register } from './features/auth/register/register';
 import { jwtInterceptor } from './core/interceptors/jwt-interceptor';
+import { UserDialog } from './features/admin/components/user-dialog/user-dialog';
 
 @NgModule({
   declarations: [
     App,
     Register,
-    Login
+    Login,
+    UserDialog
   ],
   imports: [
     BrowserModule,

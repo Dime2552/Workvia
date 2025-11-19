@@ -11,16 +11,14 @@ const API_BASE_URL: string = "https://localhost:5267/api/account";
 @Injectable({
   providedIn: 'root',
 })
-export class Authentication {
+export class AuthenticationService {
   
   public currentUserName: string | null = null;
 
   constructor(private httpClient: HttpClient) {}
 
   public postRegister(registerUser: RegisterUser): Observable<User>{
-    let headers = new HttpHeaders();
-    headers = headers.append("Authorization", `Bearer ${localStorage["token"]}`);
-    return this.httpClient.post<User>(`${API_BASE_URL}/register`, registerUser, {headers: headers});
+    return this.httpClient.post<User>(`${API_BASE_URL}/register`, registerUser);
   }
 
   public postLogin(loginUser: LoginUser): Observable<any>{

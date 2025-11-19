@@ -8,7 +8,8 @@ import { adminGuard } from './core/guards/admin-guard';
 const routes: Routes = [
   {path: 'register', component: Register, canActivate: [adminGuard]},
   {path: 'login', component: Login},
-  { path: '', redirectTo: '/login', pathMatch: 'full' }
+  {path: 'admin', loadChildren: () => import('./features/admin/admin-module').then(m => m.AdminModule), canActivate: [authGuard, adminGuard]},
+  {path: '', redirectTo: '/login', pathMatch: 'full'}
 ];
 
 @NgModule({

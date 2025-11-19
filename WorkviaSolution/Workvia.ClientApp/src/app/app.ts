@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { Authentication } from './core/services/authentication';
+import { AuthenticationService } from './core/services/authentication';
 import { Router } from '@angular/router';
 
 @Component({
@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 export class App {
   protected readonly title = signal('Workvia');
 
-  constructor(public authService: Authentication, private router: Router) {}
+  constructor(public authService: AuthenticationService, private router: Router) {}
 
   OnLogoutClicked(){
     this.authService.getLogout().subscribe({
