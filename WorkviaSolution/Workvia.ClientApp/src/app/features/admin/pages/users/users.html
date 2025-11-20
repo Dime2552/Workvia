@@ -25,12 +25,12 @@
                     <td>{{ user.name }} </td>
                     <td>{{ user.email }}</td>
                     <td class="text-end">
-                    <button class="btn btn-sm btn-outline-primary me-2" title="Edit">
+                    <button class="btn btn-sm btn-outline-primary me-2" (click)="openUpdateUserModal(user)" title="Edit">
                         <i class="bi bi-pencil"></i>
                     </button>
-                    <!--<button class="btn btn-sm btn-outline-danger" (click)="deleteUser(user.id)" title="Видалити">
+                    <button class="btn btn-sm btn-outline-danger" (click)="deleteUser(user)" title="Delete">
                         <i class="bi bi-trash"></i>
-                    </button>-->
+                    </button>
                     </td>
                 </tr>
             }

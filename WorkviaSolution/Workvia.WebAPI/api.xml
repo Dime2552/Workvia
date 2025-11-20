@@ -32,6 +32,13 @@
             <param name="userDTO"></param>
             <returns></returns>
         </member>
+        <member name="M:Workvia.WebAPI.Controllers.AccountController.DeleteUser(System.Guid)">
+            <summary>
+            Delete user
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
         <member name="M:Workvia.WebAPI.Controllers.AccountController.IsEmailAlreadyRegister(System.String)">
             <summary>
             Is email already registered

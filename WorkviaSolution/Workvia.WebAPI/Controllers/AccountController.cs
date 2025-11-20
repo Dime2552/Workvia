@@ -164,6 +164,31 @@ namespace Workvia.WebAPI.Controllers
         }
 
         /// <summary>
+        /// Delete user
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteUser(Guid id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+
+            if (user == null)
+                return NotFound("User do not exist");
+
+            var result = await _userManager.DeleteAsync(user);
+
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(" | ", result.Errors.Select(e => e.Description));
+                return BadRequest(errors);
+            }
+
+            return Ok();
+        }
+
+        /// <summary>
         /// Is email already registered
         /// </summary>
         /// <param name="email"></param>
