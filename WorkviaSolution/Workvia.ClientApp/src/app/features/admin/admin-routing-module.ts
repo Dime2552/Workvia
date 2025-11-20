@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AdminLayout } from './components/admin-layout/admin-layout';
+import { AdminLayout } from './pages/admin-layout/admin-layout';
 import { Users } from './pages/users/users';
 
 const routes: Routes = [

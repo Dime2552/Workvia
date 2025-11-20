@@ -3,7 +3,7 @@ import { UserService } from '../../../../core/services/user';
 import { AuthenticationService } from '../../../../core/services/authentication';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { User } from '../../../../core/models/user';
-import { UserDialog } from '../../components/user-dialog/user-dialog';
+import { UserRegisterModal } from '../../components/user-dialog/user-register-modal';
 
 @Component({
   selector: 'app-users',
@@ -29,7 +29,7 @@ export class Users {
   }
 
   openAddUserModal() {
-    const modalRef = this.modalService.open(UserDialog);
+    const modalRef = this.modalService.open(UserRegisterModal);
 
     modalRef.result.then((userData) => {
       if (userData) {
