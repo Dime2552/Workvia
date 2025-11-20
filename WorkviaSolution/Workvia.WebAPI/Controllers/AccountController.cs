@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Workvia.Core.DTO;
+using Workvia.Core.Entities;
 using Workvia.Core.Identity;
 using Workvia.Core.ServiceContracts;
 
@@ -122,6 +125,42 @@ namespace Workvia.WebAPI.Controllers
         {
             await _signInManager.SignOutAsync();
             return NoContent();
+        }
+
+        /// <summary>
+        /// Update user
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="userDTO"></param>
+        /// <returns></returns>
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutUpdate(Guid id, UserDTO userDTO)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (id != userDTO.Id)
+            {
+                return BadRequest();
+            }
+
+            var user = await _userManager.FindByIdAsync(userDTO.Id.ToString());
+            if (user == null)
+                return NotFound("User do not exist");
+
+            user.Email = userDTO.Email;
+            user.UserName = userDTO.Email;
+            user.PersonName = userDTO.Name;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(" | ", result.Errors.Select(e => e.Description));
+                return BadRequest(errors);
+            }
+
+            return Ok();
         }
 
         /// <summary>

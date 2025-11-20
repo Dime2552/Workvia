@@ -24,6 +24,14 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Workvia.WebAPI.Controllers.AccountController.PutUpdate(System.Guid,Workvia.Core.DTO.UserDTO)">
+            <summary>
+            Update user
+            </summary>
+            <param name="id"></param>
+            <param name="userDTO"></param>
+            <returns></returns>
+        </member>
         <member name="M:Workvia.WebAPI.Controllers.AccountController.IsEmailAlreadyRegister(System.String)">
             <summary>
             Is email already registered
