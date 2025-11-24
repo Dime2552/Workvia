@@ -1,21 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Workvia.Core.Identity;
 
-namespace Workvia.Core.Entities
+namespace Workvia.Core.DTO
 {
-    public class Shift
+    public class ShiftRequestDTO
     {
-        [Key]
         public Guid? ShiftID { get; set; }
 
         [Required(ErrorMessage = "Employee id can`t be blank")]
-        [ForeignKey("Employee")]
         public Guid EmployeeID { get; set; }
 
         // Add data fields validation
@@ -24,7 +18,5 @@ namespace Workvia.Core.Entities
 
         [Required(ErrorMessage = "End time can`t be blank")]
         public DateTime EndTime { get; set; }
-
-        public virtual ApplicationUser Employee { get; set; }
     }
 }

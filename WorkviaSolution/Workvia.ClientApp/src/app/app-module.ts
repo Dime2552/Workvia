@@ -7,14 +7,12 @@ import { App } from './app';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { Login } from './features/auth/login/login';
-import { Register } from './features/auth/register/register';
 import { jwtInterceptor } from './core/interceptors/jwt-interceptor';
 import { UserRegisterModal } from './features/admin/components/user-register-modal/user-register-modal';
 
 @NgModule({
   declarations: [
     App,
-    Register,
     Login,
     UserRegisterModal
   ],

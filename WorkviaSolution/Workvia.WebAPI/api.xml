@@ -50,37 +50,31 @@
             <summary>
             Get all shifts
             </summary>
-            <param></param>
-            <returns></returns>
         </member>
-        <member name="M:Workvia.WebAPI.Controllers.ShiftsController.GetShift(System.Guid)">
+        <member name="M:Workvia.WebAPI.Controllers.ShiftsController.GetShiftsByEmployee(System.Guid)">
             <summary>
             Get all shifts of specified employee
             </summary>
-            <param name="emploeeId"></param>
-            <returns></returns>
         </member>
-        <member name="M:Workvia.WebAPI.Controllers.ShiftsController.PutShift(System.Guid,Workvia.Core.Entities.Shift)">
+        <member name="M:Workvia.WebAPI.Controllers.ShiftsController.GetShiftById(System.Guid)">
+            <summary>
+            Get shift details
+            </summary>
+        </member>
+        <member name="M:Workvia.WebAPI.Controllers.ShiftsController.PutShift(System.Guid,Workvia.Core.DTO.ShiftRequestDTO)">
             <summary>
             Update shift
             </summary>
-            <param name="id">Guid of specified shift</param>
-            <param name="shift">New shift data</param>
-            <returns></returns>
         </member>
-        <member name="M:Workvia.WebAPI.Controllers.ShiftsController.PostShift(Workvia.Core.Entities.Shift)">
+        <member name="M:Workvia.WebAPI.Controllers.ShiftsController.PostShift(Workvia.Core.DTO.ShiftRequestDTO)">
             <summary>
             Add new shift
             </summary>
-            <param name="shift"></param>
-            <returns></returns>
         </member>
         <member name="M:Workvia.WebAPI.Controllers.ShiftsController.DeleteShift(System.Guid)">
             <summary>
             Delete shift
             </summary>
-            <param name="id"></param>
-            <returns></returns>
         </member>
         <member name="M:Workvia.WebAPI.Controllers.UsersController.GetEmployees">
             <summary>

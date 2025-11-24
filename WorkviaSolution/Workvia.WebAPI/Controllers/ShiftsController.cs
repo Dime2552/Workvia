@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Workvia.Core.DTO;
 using Workvia.Core.Entities;
+using Workvia.Core.Mappers;
 using Workvia.Infrastructure.DatabaseContext;
 
 namespace Workvia.WebAPI.Controllers
@@ -25,55 +26,68 @@ namespace Workvia.WebAPI.Controllers
         /// <summary>
         /// Get all shifts
         /// </summary>
-        /// <param></param>
-        /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Shift>>> GetShifts()
+        public async Task<ActionResult<IEnumerable<ShiftResponseDTO>>> GetShifts()
         {
-            var shifts = await _context.Shifts.ToListAsync();
+            var shifts = await _context.Shifts
+                .Include(s => s.Employee)
+                .ToListAsync();
 
-            if (shifts == null)
-            {
-                return NotFound();
-            }
-
-            return shifts;
+            return shifts.Select(s => s.ToResponseDTO()).ToList();
         }
 
         /// <summary>
         /// Get all shifts of specified employee
         /// </summary>
-        /// <param name="emploeeId"></param>
-        /// <returns></returns>
-        [HttpGet("{emploeeId}")]
+        [HttpGet("employee/{employeeId}")]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<Shift>>> GetShift(Guid emploeeId)
+        public async Task<ActionResult<IEnumerable<ShiftResponseDTO>>> GetShiftsByEmployee(Guid employeeId)
         {
-            var shifts = await _context.Shifts.Where(shift => shift.EmployeeID == emploeeId).ToListAsync();
+            var shifts = await _context.Shifts
+                .Where(shift => shift.EmployeeID == employeeId)
+                .Include(s => s.Employee)
+                .ToListAsync();
 
-            if (shifts == null)
+            return shifts.Select(s => s.ToResponseDTO()).ToList();
+        }
+
+        /// <summary>
+        /// Get shift details
+        /// </summary>
+        [HttpGet("details/{id}")]
+        public async Task<ActionResult<ShiftResponseDTO>> GetShiftById(Guid id)
+        {
+            var shift = await _context.Shifts
+                .Include(s => s.Employee)
+                .FirstOrDefaultAsync(s => s.ShiftID == id);
+
+            if (shift == null)
             {
                 return NotFound();
             }
-
-            return shifts;
+            return shift.ToResponseDTO();
         }
 
         /// <summary>
         /// Update shift
         /// </summary>
-        /// <param name="id">Guid of specified shift</param>
-        /// <param name="shift">New shift data</param>
-        /// <returns></returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutShift(Guid id, Shift shift)
+        public async Task<IActionResult> PutShift(Guid id, ShiftRequestDTO shiftDTO)
         {
-            if (id != shift.ShiftID)
+            if (id != shiftDTO.ShiftID)
             {
                 return BadRequest();
             }
 
-            _context.Entry(shift).State = EntityState.Modified;
+            var existingShift = await _context.Shifts.FindAsync(id);
+            if (existingShift == null)
+            {
+                return NotFound();
+            }
+
+            existingShift.EmployeeID = shiftDTO.EmployeeID;
+            existingShift.StartTime = shiftDTO.StartTime;
+            existingShift.EndTime = shiftDTO.EndTime;
 
             try
             {
@@ -82,13 +96,9 @@ namespace Workvia.WebAPI.Controllers
             catch (DbUpdateConcurrencyException)
             {
                 if (!ShiftExists(id))
-                {
                     return NotFound();
-                }
                 else
-                {
                     throw;
-                }
             }
 
             return NoContent();
@@ -97,27 +107,30 @@ namespace Workvia.WebAPI.Controllers
         /// <summary>
         /// Add new shift
         /// </summary>
-        /// <param name="shift"></param>
-        /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult<Shift>> PostShift(Shift shift)
+        public async Task<ActionResult<ShiftResponseDTO>> PostShift(ShiftRequestDTO shiftRequestDTO)
         {
             if (_context.Shifts == null)
             {
-                return BadRequest();
+                return BadRequest("Entity set 'ApplicationDbContext.Shifts' is null.");
             }
-            shift.ShiftID = new Guid();
-            _context.Shifts.Add(shift);
+
+            shiftRequestDTO.ShiftID = Guid.NewGuid();
+
+            var shiftEntity = shiftRequestDTO.ToEntity();
+
+            _context.Shifts.Add(shiftEntity);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetShift", new { id = shift.ShiftID }, shift);
+            var employee = await _context.Users.FindAsync(shiftEntity.EmployeeID);
+            shiftEntity.Employee = employee;
+
+            return CreatedAtAction(nameof(GetShiftById), new { id = shiftEntity.ShiftID }, shiftEntity.ToResponseDTO());
         }
 
         /// <summary>
         /// Delete shift
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteShift(Guid id)
         {
