@@ -1,0 +1,31 @@
+<div class="container">
+  <div class="d-flex justify-content-between mb-4">
+    <h2>Work Schedule</h2>
+    <button class="btn btn-primary" (click)="openAddShiftModal()">
+      <i class="bi bi-calendar-plus me-2"></i> Add Shift
+    </button>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Employee</th>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Duration</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (shift of shifts; track shift.shiftID) {
+        <tr>
+          <td>{{ shift.employeeName }}</td>
+          <td>{{ shift.startTime | date:'short' }}</td>
+          <td>{{ shift.endTime | date:'short' }}</td>
+          <td>
+             Calculated hours...
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

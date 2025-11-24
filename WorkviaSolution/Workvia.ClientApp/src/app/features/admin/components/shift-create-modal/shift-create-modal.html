@@ -1,0 +1,31 @@
+<div class="modal-body">
+  <form [formGroup]="createForm">
+    
+    <!-- Вибір працівника -->
+    <div class="mb-3">
+      <label class="form-label">Employee</label>
+      <select class="form-select" formControlName="employeeId">
+        <option [ngValue]="null">Select an employee...</option>
+        @for (emp of employees; track emp.id) {
+          <option [value]="emp.id">{{ emp.name }} ({{ emp.email }})</option>
+        }
+      </select>
+    </div>
+
+    <!-- Час початку -->
+    <div class="mb-3">
+      <label class="form-label">Start Time</label>
+      <input type="datetime-local" class="form-control" formControlName="startTime">
+    </div>
+
+    <!-- Час кінця -->
+    <div class="mb-3">
+      <label class="form-label">End Time</label>
+      <input type="datetime-local" class="form-control" formControlName="endTime">
+    </div>
+
+  </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-success" (click)="submit()">Add Shift</button>
+</div>
