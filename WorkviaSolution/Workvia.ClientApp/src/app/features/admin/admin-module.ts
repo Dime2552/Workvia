@@ -6,6 +6,7 @@ import { AdminLayout } from './pages/admin-layout/admin-layout';
 import { Users } from './pages/users/users';
 import { UserUpdateModal } from './components/user-update-modal/user-update-modal';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FullCalendarModule } from '@fullcalendar/angular';
 import { ShiftCreateModal } from './components/shift-create-modal/shift-create-modal';
 import { Schedule } from './pages/schedule/schedule';
 
@@ -21,7 +22,8 @@ import { Schedule } from './pages/schedule/schedule';
   imports: [
     CommonModule,
     AdminRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FullCalendarModule
   ]
 })
 export class AdminModule { }

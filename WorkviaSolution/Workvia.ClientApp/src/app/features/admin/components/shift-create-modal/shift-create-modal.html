@@ -1,7 +1,6 @@
 <div class="modal-body">
   <form [formGroup]="createForm">
     
-    <!-- Вибір працівника -->
     <div class="mb-3">
       <label class="form-label">Employee</label>
       <select class="form-select" formControlName="employeeId">
@@ -12,13 +11,11 @@
       </select>
     </div>
 
-    <!-- Час початку -->
     <div class="mb-3">
       <label class="form-label">Start Time</label>
       <input type="datetime-local" class="form-control" formControlName="startTime">
     </div>
 
-    <!-- Час кінця -->
     <div class="mb-3">
       <label class="form-label">End Time</label>
       <input type="datetime-local" class="form-control" formControlName="endTime">
