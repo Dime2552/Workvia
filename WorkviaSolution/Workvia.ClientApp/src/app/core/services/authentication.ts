@@ -33,6 +33,20 @@ export class AuthenticationService {
     return localStorage["token"];
   }
 
+  public getUserId(): string {
+    const token = this.getToken();
+    if (!token) return "";
+
+    try {
+      const decoded: any = jwtDecode(token);
+      const id = decoded.sub || decoded['sub'];
+      
+      return id;
+    } catch (e) {
+      return "";
+    }
+  }
+
   public isLoggedIn(): boolean {
     const token = this.getToken();
     return !!token;

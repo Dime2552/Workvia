@@ -7,6 +7,7 @@ import { adminGuard } from './core/guards/admin-guard';
 const routes: Routes = [
   {path: 'login', component: Login},
   {path: 'admin', loadChildren: () => import('./features/admin/admin-module').then(m => m.AdminModule), canActivate: [authGuard, adminGuard]},
+  {path: 'employee', loadChildren: () => import('./features/employee/employee-module').then(m => m.EmployeeModule), canActivate: [authGuard]},
   {path: '', redirectTo: '/login', pathMatch: 'full'}
 ];
 

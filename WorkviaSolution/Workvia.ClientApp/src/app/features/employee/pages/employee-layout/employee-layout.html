@@ -1,0 +1,33 @@
+<div class="d-flex" id="wrapper">
+  
+  <!-- Sidebar -->
+  <div class="bg-dark text-white border-end" id="sidebar-wrapper" style="min-width: 250px; min-height: 100vh;">
+    <div class="sidebar-heading border-bottom bg-dark p-3">
+      <h4 class="m-0">Employee Panel</h4>
+    </div>
+    <div class="list-group list-group-flush">
+      
+      <!-- Employee Schedule -->
+      <a routerLink="/employee/schedule" 
+         routerLinkActive="active" 
+         class="list-group-item list-group-item-action list-group-item-dark bg-dark text-white p-3">
+        <i class="bi bi-calendar-week me-2"></i> Schedule
+      </a>
+
+      <!-- Placeholder for now -->
+      <a routerLink="/employee/schedule"
+         routerLinkActive="active" 
+         class="list-group-item list-group-item-action list-group-item-dark bg-dark text-white p-3">
+        <i class="bi bi-gear me-2"></i> Preferences
+      </a>
+
+    </div>
+  </div>
+
+  <!-- page content -->
+  <div id="page-content-wrapper" class="w-100">
+    <div class="container-fluid p-4">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
