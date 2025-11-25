@@ -71,7 +71,7 @@ export class EmployeeSchedule {
     this.shiftService.getShiftsOfEmployee(userId).subscribe(data => {
       const calendarEvents: EventInput[] = data.map(shift => ({
         id: shift.shiftID || '',
-        title: 'Shift',
+        title: '',
         start: shift.startTime,
         end: shift.endTime,
         backgroundColor: '#198754',

@@ -7,6 +7,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { ShiftRequest } from '../../../../core/models/shift-request';
 import { ShiftService } from '../../../../core/services/shift';
 import { ShiftCreateModal } from '../../components/shift-create-modal/shift-create-modal';
+import { ShiftUpdateModal } from '../../components/shift-update-modal/shift-update-modal';
 
 @Component({
   selector: 'app-schedule',
@@ -74,6 +75,8 @@ export class Schedule {
         start: shift.startTime,
         end: shift.endTime,
         backgroundColor: this.stringToColor(shift.employeeName || ''),
+        borderColor: this.stringToColor(shift.employeeName || ''),
+        extendedProps: { employeeId: shift.employeeID }
       }));
 
       this.calendarOptions = {
@@ -91,9 +94,10 @@ export class Schedule {
     modalRef.result.then((formData) => {
       if (formData) {
         const request: ShiftRequest = {
-            employeeId: formData.employeeId,
-            startTime: formData.startTime,
-            endTime: formData.endTime
+          employeeId: formData.employeeId,
+          startTime: formData.startTime,
+          endTime: formData.endTime,
+          shiftId: null
         };
 
         this.shiftService.postShift(request).subscribe({
@@ -105,11 +109,41 @@ export class Schedule {
   }
 
   handleEventClick(clickInfo: any) {
-    if (confirm(`Delete shift for '${clickInfo.event.title}'?`)) {
-       this.shiftService.deleteShift(clickInfo.event.id).subscribe(() => {
-         clickInfo.event.remove();
-       });
-    }
+    const event = clickInfo.event;
+
+    const modalRef = this.modalService.open(ShiftUpdateModal);
+
+    modalRef.componentInstance.shiftData = {
+      id: event.id,
+      employeeId: event.extendedProps.employeeId,
+      start: event.start,
+      end: event.end
+    };
+
+    modalRef.result.then((result) => {
+      if (!result) return;
+
+      if (result.action === 'delete') {
+        this.shiftService.deleteShift(event.id).subscribe(() => {
+          event.remove();
+        });
+      } 
+      else if (result.action === 'update') {
+        const request: ShiftRequest = {
+          employeeId: result.data.employeeId,
+          shiftId: event.id,
+          startTime: result.data.startTime,
+          endTime: result.data.endTime
+        };
+
+        this.shiftService.updateShift(event.id, request).subscribe({
+          next: () => {
+             this.loadShifts();
+          },
+          error: (err) => console.error(err)
+        });
+      }
+    }, () => { });
   }
 
   stringToColor(str: string) {

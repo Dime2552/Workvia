@@ -9,6 +9,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { ShiftCreateModal } from './components/shift-create-modal/shift-create-modal';
 import { Schedule } from './pages/schedule/schedule';
+import { ShiftUpdateModal } from './components/shift-update-modal/shift-update-modal';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { Schedule } from './pages/schedule/schedule';
     Users,
     UserUpdateModal,
     ShiftCreateModal,
-    Schedule
+    Schedule,
+    ShiftUpdateModal
   ],
   imports: [
     CommonModule,

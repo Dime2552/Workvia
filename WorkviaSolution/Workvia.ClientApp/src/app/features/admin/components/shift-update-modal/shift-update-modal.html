@@ -1,0 +1,37 @@
+<div class="modal-header">
+  <h4 class="modal-title">Edit Shift</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="editForm">
+    
+    <div class="mb-3">
+      <label class="form-label">Employee</label>
+      <select class="form-select" formControlName="employeeId">
+        <option [ngValue]="null">Select an employee...</option>
+        @for (emp of employees; track emp.id) {
+          <option [value]="emp.id">{{ emp.name }} ({{ emp.email }})</option>
+        }
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Start Time</label>
+      <input type="datetime-local" class="form-control" formControlName="startTime">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">End Time</label>
+      <input type="datetime-local" class="form-control" formControlName="endTime">
+    </div>
+
+  </form>
+</div>
+<div class="modal-footer d-flex justify-content-between">
+  <button class="btn btn-danger" (click)="delete()">Delete</button>
+  <div>
+    <button class="btn btn-secondary me-2" (click)="activeModal.dismiss()">Cancel</button>
+    <button class="btn btn-primary" (click)="update()">Save Changes</button>
+  </div>
+</div>
