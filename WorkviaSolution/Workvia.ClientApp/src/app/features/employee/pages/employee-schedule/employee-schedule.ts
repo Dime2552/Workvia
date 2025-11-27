@@ -73,9 +73,7 @@ export class EmployeeSchedule {
         id: shift.shiftID || '',
         title: '',
         start: shift.startTime,
-        end: shift.endTime,
-        backgroundColor: '#198754',
-        borderColor: '#157347'
+        end: shift.endTime
       }));
 
       this.calendarOptions = {

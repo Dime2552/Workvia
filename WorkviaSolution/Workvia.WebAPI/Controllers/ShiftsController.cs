@@ -27,6 +27,7 @@ namespace Workvia.WebAPI.Controllers
         /// Get all shifts
         /// </summary>
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<ShiftResponseDTO>>> GetShifts()
         {
             var shifts = await _context.Shifts
@@ -40,7 +41,6 @@ namespace Workvia.WebAPI.Controllers
         /// Get all shifts of specified employee
         /// </summary>
         [HttpGet("employee/{employeeId}")]
-        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ShiftResponseDTO>>> GetShiftsByEmployee(Guid employeeId)
         {
             var shifts = await _context.Shifts
@@ -72,6 +72,7 @@ namespace Workvia.WebAPI.Controllers
         /// Update shift
         /// </summary>
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutShift(Guid id, ShiftRequestDTO shiftDTO)
         {
             if (id != shiftDTO.ShiftID)
@@ -108,6 +109,7 @@ namespace Workvia.WebAPI.Controllers
         /// Add new shift
         /// </summary>
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ShiftResponseDTO>> PostShift(ShiftRequestDTO shiftRequestDTO)
         {
             if (_context.Shifts == null)
@@ -132,6 +134,7 @@ namespace Workvia.WebAPI.Controllers
         /// Delete shift
         /// </summary>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteShift(Guid id)
         {
             var shift = await _context.Shifts.FindAsync(id);
