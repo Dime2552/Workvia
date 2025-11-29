@@ -19,6 +19,10 @@ export class UserService {
     return this.httpClient.put<string>(`${API_BASE_URL}/account/${userId}`, user);
   }
 
+  public updatePassword(params: any): Observable<any> {
+    return this.httpClient.put<any>(`${API_BASE_URL}/account/change-password`, params)
+  }
+
   public deleteEmployee(employeeId: string | null): Observable<any>{
     return this.httpClient.delete(`${API_BASE_URL}/account/${employeeId}`);
   }

@@ -32,6 +32,13 @@
             <param name="userDTO"></param>
             <returns></returns>
         </member>
+        <member name="M:Workvia.WebAPI.Controllers.AccountController.ChangePassword(Workvia.Core.DTO.ChangePasswordDTO)">
+            <summary>
+            Change user password
+            </summary>
+            <param name="changePasswordDTO"></param>
+            <returns></returns>
+        </member>
         <member name="M:Workvia.WebAPI.Controllers.AccountController.DeleteUser(System.Guid)">
             <summary>
             Delete user

@@ -11,6 +11,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { Login } from './features/auth/login/login';
 import { jwtInterceptor } from './core/interceptors/jwt-interceptor';
 import { UserRegisterModal } from './features/admin/components/user-register-modal/user-register-modal';
+import { UserPreferences } from './features/shared/pages/user-preferences/user-preferences';
+import { PasswordChangeModal } from './features/shared/components/password-change-modal/password-change-modal';
 
 registerLocaleData(localeUk);
 
@@ -18,7 +20,9 @@ registerLocaleData(localeUk);
   declarations: [
     App,
     Login,
-    UserRegisterModal
+    UserRegisterModal,
+    UserPreferences,
+    PasswordChangeModal
   ],
   imports: [
     BrowserModule,

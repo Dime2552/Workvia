@@ -164,6 +164,44 @@ namespace Workvia.WebAPI.Controllers
         }
 
         /// <summary>
+        /// Change user password
+        /// </summary>
+        /// <param name="changePasswordDTO"></param>
+        /// <returns></returns>
+        [HttpPut("change-password")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDTO changePasswordDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                string errorMessage = string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return BadRequest(errorMessage);
+            }
+
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return Unauthorized("User ID not found in token");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, changePasswordDTO.CurrentPassword, changePasswordDTO.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                string errors = string.Join("|", result.Errors.Select(e => e.Description));
+                return BadRequest(errors);
+            }
+
+            return Ok();
+        }
+
+        /// <summary>
         /// Delete user
         /// </summary>
         /// <param name="id"></param>
