@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Workvia.Core.DTO;
-using Workvia.Core.Entities;
-using Workvia.Core.Identity;
+using Workvia.Core.ServiceContracts;
 
 namespace Workvia.WebAPI.Controllers
 {
@@ -11,11 +9,11 @@ namespace Workvia.WebAPI.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserService _userService;
 
-        public UsersController(UserManager<ApplicationUser> userManager)
+        public UsersController(IUserService userService)
         {
-            _userManager = userManager;
+            _userService = userService;
         }
 
         /// <summary>
@@ -23,19 +21,10 @@ namespace Workvia.WebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("employees")]
-        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetEmployees()
         {
-            var applicationUsers = await _userManager.GetUsersInRoleAsync("User");
-
-            IList<UserDTO> result = new List<UserDTO>();
-
-            foreach (var applicationUser in applicationUsers)
-            {
-                result.Add(new UserDTO { Email = applicationUser.Email, Id = applicationUser.Id, Name = applicationUser.PersonName });
-            }
-
-            return Ok(result);
+            var employees = await _userService.GetEmployeesAsync();
+            return Ok(employees);
         }
     }
 }

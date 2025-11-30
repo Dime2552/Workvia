@@ -1,21 +1,20 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Net;
 using Workvia.Core.Identity;
-using Workvia.Core.ServiceContracts;
 using Workvia.Core.Services;
+using Workvia.Core.ServiceContracts;
 using Workvia.Infrastructure.DatabaseContext;
+using Workvia.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Filters
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add(new ProducesAttribute("application/json"));
@@ -25,7 +24,11 @@ builder.Services.AddControllers(options =>
     options.Filters.Add(new AuthorizeFilter(policy));
 });
 
+// Services
 builder.Services.AddTransient<IJwtService, JwtService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IShiftService, ShiftService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -49,10 +52,10 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
     options.Password.RequireUppercase = true;
     options.Password.RequireLowercase = true;
 })
-.AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders()
-.AddUserStore<UserStore<ApplicationUser, ApplicationRole, ApplicationDbContext, Guid>>()
-.AddRoleStore<RoleStore<ApplicationRole, ApplicationDbContext, Guid>>();
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders()
+    .AddUserStore<UserStore<ApplicationUser, ApplicationRole, ApplicationDbContext, Guid>>()
+    .AddRoleStore<RoleStore<ApplicationRole, ApplicationDbContext, Guid>>();
 
 // Cors
 builder.Services.AddCors(options =>

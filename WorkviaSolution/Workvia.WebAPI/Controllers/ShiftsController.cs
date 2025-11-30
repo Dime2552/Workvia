@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Workvia.Core.DTO;
-using Workvia.Core.Entities;
-using Workvia.Core.Mappers;
-using Workvia.Infrastructure.DatabaseContext;
+using Workvia.Core.ServiceContracts;
 
 namespace Workvia.WebAPI.Controllers
 {
@@ -16,11 +9,11 @@ namespace Workvia.WebAPI.Controllers
     [ApiController]
     public class ShiftsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IShiftService _shiftService;
 
-        public ShiftsController(ApplicationDbContext context)
+        public ShiftsController(IShiftService shiftService)
         {
-            _context = context;
+            _shiftService = shiftService;
         }
 
         /// <summary>
@@ -30,11 +23,8 @@ namespace Workvia.WebAPI.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<ShiftResponseDTO>>> GetShifts()
         {
-            var shifts = await _context.Shifts
-                .Include(s => s.Employee)
-                .ToListAsync();
-
-            return shifts.Select(s => s.ToResponseDTO()).ToList();
+            var shifts = await _shiftService.GetAllShiftsAsync();
+            return Ok(shifts);
         }
 
         /// <summary>
@@ -43,12 +33,8 @@ namespace Workvia.WebAPI.Controllers
         [HttpGet("employee/{employeeId}")]
         public async Task<ActionResult<IEnumerable<ShiftResponseDTO>>> GetShiftsByEmployee(Guid employeeId)
         {
-            var shifts = await _context.Shifts
-                .Where(shift => shift.EmployeeID == employeeId)
-                .Include(s => s.Employee)
-                .ToListAsync();
-
-            return shifts.Select(s => s.ToResponseDTO()).ToList();
+            var shifts = await _shiftService.GetShiftsByEmployeeAsync(employeeId);
+            return Ok(shifts);
         }
 
         /// <summary>
@@ -57,15 +43,10 @@ namespace Workvia.WebAPI.Controllers
         [HttpGet("details/{id}")]
         public async Task<ActionResult<ShiftResponseDTO>> GetShiftById(Guid id)
         {
-            var shift = await _context.Shifts
-                .Include(s => s.Employee)
-                .FirstOrDefaultAsync(s => s.ShiftID == id);
-
+            var shift = await _shiftService.GetShiftByIdAsync(id);
             if (shift == null)
-            {
                 return NotFound();
-            }
-            return shift.ToResponseDTO();
+            return Ok(shift);
         }
 
         /// <summary>
@@ -75,31 +56,15 @@ namespace Workvia.WebAPI.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutShift(Guid id, ShiftRequestDTO shiftDTO)
         {
-            if (id != shiftDTO.ShiftID)
-            {
-                return BadRequest();
-            }
+            var result = await _shiftService.UpdateShiftAsync(id, shiftDTO);
 
-            var existingShift = await _context.Shifts.FindAsync(id);
-            if (existingShift == null)
+            if (!result.Succeeded)
             {
-                return NotFound();
-            }
-
-            existingShift.EmployeeID = shiftDTO.EmployeeID;
-            existingShift.StartTime = shiftDTO.StartTime;
-            existingShift.EndTime = shiftDTO.EndTime;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ShiftExists(id))
+                if (result.Error == "Shift not found")
                     return NotFound();
-                else
-                    throw;
+                if (result.Error == "Mismatch ID")
+                    return BadRequest();
+                return Problem(result.Error);
             }
 
             return NoContent();
@@ -112,22 +77,8 @@ namespace Workvia.WebAPI.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ShiftResponseDTO>> PostShift(ShiftRequestDTO shiftRequestDTO)
         {
-            if (_context.Shifts == null)
-            {
-                return BadRequest("Entity set 'ApplicationDbContext.Shifts' is null.");
-            }
-
-            shiftRequestDTO.ShiftID = Guid.NewGuid();
-
-            var shiftEntity = shiftRequestDTO.ToEntity();
-
-            _context.Shifts.Add(shiftEntity);
-            await _context.SaveChangesAsync();
-
-            var employee = await _context.Users.FindAsync(shiftEntity.EmployeeID);
-            shiftEntity.Employee = employee;
-
-            return CreatedAtAction(nameof(GetShiftById), new { id = shiftEntity.ShiftID }, shiftEntity.ToResponseDTO());
+            var createdShift = await _shiftService.CreateShiftAsync(shiftRequestDTO);
+            return CreatedAtAction(nameof(GetShiftById), new { id = createdShift.ShiftID }, createdShift);
         }
 
         /// <summary>
@@ -137,21 +88,11 @@ namespace Workvia.WebAPI.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteShift(Guid id)
         {
-            var shift = await _context.Shifts.FindAsync(id);
-            if (shift == null)
-            {
+            var success = await _shiftService.DeleteShiftAsync(id);
+            if (!success)
                 return NotFound();
-            }
-
-            _context.Shifts.Remove(shift);
-            await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool ShiftExists(Guid id)
-        {
-            return _context.Shifts.Any(e => e.ShiftID == id);
         }
     }
 }

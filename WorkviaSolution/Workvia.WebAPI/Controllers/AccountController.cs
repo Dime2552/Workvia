@@ -1,12 +1,8 @@
-﻿using Humanizer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Workvia.Core.DTO;
-using Workvia.Core.Entities;
-using Workvia.Core.Identity;
 using Workvia.Core.ServiceContracts;
 
 namespace Workvia.WebAPI.Controllers
@@ -15,17 +11,13 @@ namespace Workvia.WebAPI.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<ApplicationRole> _roleManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly IJwtService _jwtService;
+        private readonly IAuthService _authService;
+        private readonly IUserService _userService;
 
-        public AccountController(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, SignInManager<ApplicationUser> signInManager, IJwtService jwtService)
+        public AccountController(IAuthService authService, IUserService userService)
         {
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _signInManager = signInManager;
-            _jwtService = jwtService;
+            _authService = authService;
+            _userService = userService;
         }
 
         /// <summary>
@@ -37,42 +29,15 @@ namespace Workvia.WebAPI.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<UserDTO>> PostRegister(RegisterDTO registerDTO)
         {
-            //Validation
-            if (ModelState.IsValid == false)
-            {
-                string errorMessage = string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                return Problem(errorMessage);
-            }
+            if (!ModelState.IsValid)
+                return Problem(string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
 
-            // Create user
-            ApplicationUser user = new ApplicationUser()
-            {
-                PersonName = registerDTO.PersonName,
-                Email = registerDTO.Email,
-                UserName = registerDTO.Email
-            };
-
-            IdentityResult result = await _userManager.CreateAsync(user, registerDTO.Password);
+            var result = await _authService.RegisterAsync(registerDTO);
 
             if (result.Succeeded)
-            {
-                // Add role
-                if (registerDTO.IsAdmin)
-                {
-                    await _userManager.AddToRoleAsync(user, "Admin");
-                }
-                else
-                {
-                    await _userManager.AddToRoleAsync(user, "User");
-                }
+                return Ok(result.User);
 
-                return Ok(new UserDTO { Id = user.Id, Email = user.Email, Name = user.PersonName });
-            }
-            else
-            {
-                string errorMessage = string.Join("|", result.Errors.Select(e => e.Description));
-                return Problem(errorMessage);
-            }
+            return Problem(string.Join("|", result.Errors));
         }
 
         /// <summary>
@@ -84,35 +49,15 @@ namespace Workvia.WebAPI.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<AuthenticationResponse>> PostLogin(LoginDTO loginDTO)
         {
-            //Validation
-            if (ModelState.IsValid == false)
-            {
-                string errorMessage = string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                return Problem(errorMessage);
-            }
+            if (!ModelState.IsValid)
+                return Problem(string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
 
-            var result = await _signInManager.PasswordSignInAsync(loginDTO.Email, loginDTO.Password, isPersistent: false, lockoutOnFailure: false);
+            var result = await _authService.LoginAsync(loginDTO);
 
             if (result.Succeeded)
-            {
-                ApplicationUser? user = await _userManager.FindByEmailAsync(loginDTO.Email);
-                var role = await _userManager.GetRolesAsync(user);
+                return Ok(result.AuthResponse);
 
-                if (user == null)
-                {
-                    return NoContent();
-                }
-
-                await _signInManager.SignInAsync(user, isPersistent: false);
-
-                var authenticationResponse = _jwtService.CreateJwt(user, role.FirstOrDefault("User"));
-
-                return Ok(authenticationResponse);
-            }
-            else
-            {
-                return Problem("Invalid email or password");
-            }
+            return Problem(result.Error);
         }
 
         /// <summary>
@@ -123,7 +68,7 @@ namespace Workvia.WebAPI.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetLogout()
         {
-            await _signInManager.SignOutAsync();
+            await _authService.LogoutAsync();
             return NoContent();
         }
 
@@ -138,27 +83,13 @@ namespace Workvia.WebAPI.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
             if (id != userDTO.Id)
-            {
                 return BadRequest();
-            }
 
-            var user = await _userManager.FindByIdAsync(userDTO.Id.ToString());
-            if (user == null)
-                return NotFound("User do not exist");
-
-            user.Email = userDTO.Email;
-            user.UserName = userDTO.Email;
-            user.PersonName = userDTO.Name;
-
-            var result = await _userManager.UpdateAsync(user);
+            var result = await _userService.UpdateUserAsync(id, userDTO);
 
             if (!result.Succeeded)
-            {
-                var errors = string.Join(" | ", result.Errors.Select(e => e.Description));
-                return BadRequest(errors);
-            }
+                return BadRequest(string.Join(" | ", result.Errors));
 
             return Ok();
         }
@@ -172,31 +103,16 @@ namespace Workvia.WebAPI.Controllers
         public async Task<IActionResult> ChangePassword(ChangePasswordDTO changePasswordDTO)
         {
             if (!ModelState.IsValid)
-            {
-                string errorMessage = string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                return BadRequest(errorMessage);
-            }
+                return BadRequest(string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
 
-            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-
-            if (userId == null)
-            {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null || !Guid.TryParse(userIdClaim, out Guid userId))
                 return Unauthorized("User ID not found in token");
-            }
 
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return NotFound("User not found");
-            }
-
-            var result = await _userManager.ChangePasswordAsync(user, changePasswordDTO.CurrentPassword, changePasswordDTO.NewPassword);
+            var result = await _userService.ChangePasswordAsync(userId, changePasswordDTO);
 
             if (!result.Succeeded)
-            {
-                string errors = string.Join("|", result.Errors.Select(e => e.Description));
-                return BadRequest(errors);
-            }
+                return BadRequest(string.Join("|", result.Errors));
 
             return Ok();
         }
@@ -210,18 +126,10 @@ namespace Workvia.WebAPI.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
-            var user = await _userManager.FindByIdAsync(id.ToString());
-
-            if (user == null)
-                return NotFound("User do not exist");
-
-            var result = await _userManager.DeleteAsync(user);
+            var result = await _userService.DeleteUserAsync(id);
 
             if (!result.Succeeded)
-            {
-                var errors = string.Join(" | ", result.Errors.Select(e => e.Description));
-                return BadRequest(errors);
-            }
+                return BadRequest(string.Join(" | ", result.Errors));
 
             return Ok();
         }
@@ -234,12 +142,8 @@ namespace Workvia.WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> IsEmailAlreadyRegister(string email)
         {
-            ApplicationUser? user = await _userManager.FindByEmailAsync(email);
-
-            if (user == null) 
-                return Ok(false);
-            else
-                return Ok(true);
+            bool isRegistered = await _userService.IsEmailRegisteredAsync(email);
+            return Ok(isRegistered);
         }
     }
 }
