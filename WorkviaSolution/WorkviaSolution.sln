@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36301.6 d17.14
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11222.15 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workvia.WebAPI", "Workvia.WebAPI\Workvia.WebAPI.csproj", "{D4D22F08-8BAB-4961-B4EC-3F18CD60B700}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "Workvia.ClientApp", "Workvia.ClientApp\Workvia.ClientApp.esproj", "{6237D34D-0679-B760-FB63-2827439F96C7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workvia.Infrastructure", "Workvia.Infrastructure\Workvia.Infrastructure.csproj", "{B8E4ED2F-E884-4BC2-AFDB-841FAE747631}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workvia.Tests", "Workvia.Tests\Workvia.Tests.csproj", "{639A0E84-48A7-471F-98A7-0839B1F76D00}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{B8E4ED2F-E884-4BC2-AFDB-841FAE747631}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8E4ED2F-E884-4BC2-AFDB-841FAE747631}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8E4ED2F-E884-4BC2-AFDB-841FAE747631}.Release|Any CPU.Build.0 = Release|Any CPU
+		{639A0E84-48A7-471F-98A7-0839B1F76D00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{639A0E84-48A7-471F-98A7-0839B1F76D00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{639A0E84-48A7-471F-98A7-0839B1F76D00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{639A0E84-48A7-471F-98A7-0839B1F76D00}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

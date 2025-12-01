@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Workvia.Core.DTO
 {
-    public class ShiftRequestDTO
+    public class ShiftRequestDTO : IValidatableObject
     {
         public Guid? ShiftID { get; set; }
 
@@ -18,5 +18,16 @@ namespace Workvia.Core.DTO
 
         [Required(ErrorMessage = "End time can`t be blank")]
         public DateTime EndTime { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (EndTime <= StartTime)
+            {
+                yield return new ValidationResult(
+                    "End time must be greater than Start time",
+                    new[] { nameof(EndTime), nameof(StartTime) }
+                );
+            }
+        }
     }
 }
