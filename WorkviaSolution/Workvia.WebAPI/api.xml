@@ -83,6 +83,36 @@
             Delete shift
             </summary>
         </member>
+        <member name="M:Workvia.WebAPI.Controllers.StatisticsController.GetShiftsPerDay">
+            <summary>
+            Get shifts count per day of week
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Workvia.WebAPI.Controllers.StatisticsController.GetTotalHours(System.DateTime,System.DateTime)">
+            <summary>
+            Get total worked hours by all employees
+            </summary>
+            <param name="start"></param>
+            <param name="end"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Workvia.WebAPI.Controllers.StatisticsController.GetTopEmployees(System.DateTime,System.DateTime)">
+            <summary>
+            Get top 5 employees by worked hours
+            </summary>
+            <param name="start"></param>
+            <param name="end"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Workvia.WebAPI.Controllers.StatisticsController.GetMyHours(System.DateTime,System.DateTime)">
+            <summary>
+            Get worked hours for current logged-in user
+            </summary>
+            <param name="start"></param>
+            <param name="end"></param>
+            <returns></returns>
+        </member>
         <member name="M:Workvia.WebAPI.Controllers.UsersController.GetEmployees">
             <summary>
             Get all employees
