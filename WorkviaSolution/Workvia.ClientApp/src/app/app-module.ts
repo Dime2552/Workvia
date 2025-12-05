@@ -13,6 +13,7 @@ import { jwtInterceptor } from './core/interceptors/jwt-interceptor';
 import { UserRegisterModal } from './features/admin/components/user-register-modal/user-register-modal';
 import { UserPreferences } from './features/shared/pages/user-preferences/user-preferences';
 import { PasswordChangeModal } from './features/shared/components/password-change-modal/password-change-modal';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 registerLocaleData(localeUk);
 
@@ -38,7 +39,8 @@ registerLocaleData(localeUk);
       useClass: jwtInterceptor,
       multi: true
     },
-    { provide: LOCALE_ID, useValue: 'uk-UA' } 
+    { provide: LOCALE_ID, useValue: 'uk-UA' },
+    provideCharts(withDefaultRegisterables())
   ],
   bootstrap: [App]
 })

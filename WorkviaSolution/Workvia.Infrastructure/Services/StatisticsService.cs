@@ -19,21 +19,21 @@ namespace Workvia.Infrastructure.Services
             var endDate = DateTime.UtcNow;
             var startDate = endDate.AddMonths(-1);
 
-            var stats = await _context.Shifts
+            var shiftsDates = await _context.Shifts
                 .Where(s => s.StartTime >= startDate && s.StartTime <= endDate)
-                .GroupBy(s => s.StartTime.DayOfWeek)
-                .Select(g => new
-                {
-                    Day = g.Key,
-                    Count = g.Count()
-                })
+                .Select(s => s.StartTime)
                 .ToListAsync();
 
-            return stats.Select(s => new ShiftsPerDayDTO
-            {
-                DayOfWeek = s.Day.ToString(),
-                Count = s.Count
-            });
+            var stats = shiftsDates
+                .GroupBy(d => d.DayOfWeek)
+                .Select(g => new ShiftsPerDayDTO
+                {
+                    DayOfWeek = g.Key.ToString(),
+                    Count = g.Count()
+                })
+                .ToList();
+
+            return stats;
         }
 
         public async Task<double> GetTotalHoursWorkedAsync(DateTime startDate, DateTime endDate)

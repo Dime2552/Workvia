@@ -5,6 +5,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { AuthenticationService } from '../../../../core/services/authentication';
 import { ShiftService } from '../../../../core/services/shift';
+import { StatisticsService } from '../../../../core/services/statistics';
 
 @Component({
   selector: 'app-employee-schedule',
@@ -13,6 +14,8 @@ import { ShiftService } from '../../../../core/services/shift';
   styleUrl: './employee-schedule.css',
 })
 export class EmployeeSchedule {
+  myTotalHours: number = 0;
+
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     initialView: 'timeGridWeek',
@@ -56,11 +59,13 @@ export class EmployeeSchedule {
   constructor(
     private shiftService: ShiftService,
     private authService: AuthenticationService,
+    private statsService: StatisticsService,
     private cdr: ChangeDetectorRef 
   ) {}
 
   ngOnInit() {
     this.loadMyShifts();
+    this.loadMyHours();
   }
 
   loadMyShifts() {
@@ -82,6 +87,17 @@ export class EmployeeSchedule {
       };
       
       this.cdr.detectChanges();
+    });
+  }
+
+  loadMyHours() {
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    this.statsService.getMyHours(firstDay, lastDay).subscribe({
+        next: (hours) => this.myTotalHours = hours,
+        error: (err) => console.error(err)
     });
   }
 }

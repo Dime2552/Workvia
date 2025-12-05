@@ -10,6 +10,8 @@ import { FullCalendarModule } from '@fullcalendar/angular';
 import { ShiftCreateModal } from './components/shift-create-modal/shift-create-modal';
 import { Schedule } from './pages/schedule/schedule';
 import { ShiftUpdateModal } from './components/shift-update-modal/shift-update-modal';
+import { Dashboard } from './pages/dashboard/dashboard';
+import { BaseChartDirective } from 'ng2-charts';
 
 
 @NgModule({
@@ -19,13 +21,15 @@ import { ShiftUpdateModal } from './components/shift-update-modal/shift-update-m
     UserUpdateModal,
     ShiftCreateModal,
     Schedule,
-    ShiftUpdateModal
+    ShiftUpdateModal,
+    Dashboard
   ],
   imports: [
     CommonModule,
     AdminRoutingModule,
     ReactiveFormsModule,
-    FullCalendarModule
+    FullCalendarModule,
+    BaseChartDirective
   ]
 })
 export class AdminModule { }
