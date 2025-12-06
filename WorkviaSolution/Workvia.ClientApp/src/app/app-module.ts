@@ -14,6 +14,7 @@ import { UserRegisterModal } from './features/admin/components/user-register-mod
 import { UserPreferences } from './features/shared/pages/user-preferences/user-preferences';
 import { PasswordChangeModal } from './features/shared/components/password-change-modal/password-change-modal';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
+import { ConfirmationModal } from './features/shared/components/confirmation-modal/confirmation-modal';
 
 registerLocaleData(localeUk);
 
@@ -23,7 +24,8 @@ registerLocaleData(localeUk);
     Login,
     UserRegisterModal,
     UserPreferences,
-    PasswordChangeModal
+    PasswordChangeModal,
+    ConfirmationModal
   ],
   imports: [
     BrowserModule,

@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { User } from '../../../../core/models/user';
 import { UserService } from '../../../../core/services/user';
+import { DialogService } from '../../../../core/services/dialog-service';
 
 @Component({
   selector: 'app-shift-update-modal',
@@ -15,7 +16,7 @@ export class ShiftUpdateModal {
   employees: User[] = [];
   editForm: FormGroup;
 
-  constructor(public activeModal: NgbActiveModal, private userService: UserService) {
+  constructor(public activeModal: NgbActiveModal, private userService: UserService, private dialogService: DialogService) {
     this.editForm = new FormGroup({
       employeeId: new FormControl(null, [Validators.required]),
       startTime: new FormControl(null, [Validators.required]),
@@ -49,7 +50,7 @@ export class ShiftUpdateModal {
     if (this.editForm.valid) {
       const formData = this.editForm.value;
       if (new Date(formData.endTime) <= new Date(formData.startTime)) {
-        alert("End time must be after Start time!");
+        this.dialogService.alert("Invalid Time", "End time must be after Start time!");
         return;
       }
       this.activeModal.close({ action: 'update', data: formData });
@@ -57,8 +58,11 @@ export class ShiftUpdateModal {
   }
 
   delete() {
-    if (confirm('Are you sure you want to delete this shift?')) {
-      this.activeModal.close({ action: 'delete' });
-    }
+    this.dialogService.confirm("Delete Shift", "Are you sure you want to delete this shift?")
+      .then((confirmed) => {
+        if (confirmed) {
+          this.activeModal.close({ action: 'delete' });
+        }
+      });
   }
 }

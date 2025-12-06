@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { User } from '../../../../core/models/user';
 import { UserService } from '../../../../core/services/user';
+import { DialogService } from '../../../../core/services/dialog-service';
 
 @Component({
   selector: 'app-shift-create-modal',
@@ -14,7 +15,7 @@ export class ShiftCreateModal {
   employees: User[] = [];
   createForm: FormGroup;
 
-  constructor(public activeModal: NgbActiveModal, private userService: UserService) {
+  constructor(public activeModal: NgbActiveModal, private userService: UserService, private dialogService: DialogService) {
     this.createForm = new FormGroup({
       employeeId: new FormControl(null, [Validators.required]),
       startTime: new FormControl(null, [Validators.required]),
@@ -35,7 +36,7 @@ export class ShiftCreateModal {
         const end = new Date(formData.endTime);
 
         if (end <= start) {
-            alert("End time must be after Start time!"); 
+            this.dialogService.alert("Invalid Time", "End time must be after Start time!");
             return;
         }
     }

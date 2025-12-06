@@ -1,0 +1,15 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{ title }}</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+</div>
+
+<div class="modal-body">
+  <p>{{ message }}</p>
+</div>
+
+<div class="modal-footer">
+  @if (!isAlert) {
+    <button type="button" class="btn btn-secondary" (click)="activeModal.close(false)">{{ btnCancelText }}</button>
+  }
+  <button type="button" [class]="'btn ' + btnOkClass" (click)="activeModal.close(true)">{{ btnOkText }}</button>
+</div>

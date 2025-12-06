@@ -5,6 +5,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { User } from '../../../../core/models/user';
 import { UserRegisterModal } from '../../components/user-register-modal/user-register-modal';
 import { UserUpdateModal } from '../../components/user-update-modal/user-update-modal';
+import { DialogService } from '../../../../core/services/dialog-service';
 
 @Component({
   selector: 'app-users',
@@ -18,7 +19,8 @@ export class Users {
   constructor(
     private userService: UserService,
     private authService: AuthenticationService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private dialogService: DialogService
   ) {}
 
   ngOnInit() {
@@ -79,16 +81,19 @@ export class Users {
   }
 
   deleteUser(user: User) : void{
-    if (confirm(`Delete ${user.name}?`)) {
-      this.userService.deleteEmployee(user.id).subscribe({
-        next: () => {
-          this.loadUsers();
-        },
-        error: (error) => {
-          console.error(error);
-        },
-        complete: () => {}
-      })
-    }
+    this.dialogService.confirm("Delete User", `Are you sure you want to delete ${user.name}?`)
+      .then((confirmed) => {
+        if (confirmed) {
+          this.userService.deleteEmployee(user.id).subscribe({
+            next: () => {
+              this.loadUsers();
+            },
+            error: (error) => {
+              console.error(error);
+            },
+            complete: () => {}
+          });
+        }
+      });
   }
 }
