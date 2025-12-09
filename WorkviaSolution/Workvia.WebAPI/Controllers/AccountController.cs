@@ -57,7 +57,7 @@ namespace Workvia.WebAPI.Controllers
             if (result.Succeeded)
                 return Ok(result.AuthResponse);
 
-            return Problem(result.Error);
+            return BadRequest(result.Error);
         }
 
         /// <summary>
