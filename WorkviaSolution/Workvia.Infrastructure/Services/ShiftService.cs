@@ -46,8 +46,14 @@ namespace Workvia.Infrastructure.Services
             return shift?.ToResponseDTO();
         }
 
-        public async Task<ShiftResponseDTO> CreateShiftAsync(ShiftRequestDTO shiftRequestDTO)
+        public async Task<(bool Succeeded, string Error, ShiftResponseDTO? Shift)> CreateShiftAsync(ShiftRequestDTO shiftRequestDTO)
         {
+            // Перевірка на перетин
+            if (await IsOverlapAsync(shiftRequestDTO.EmployeeID, shiftRequestDTO.StartTime, shiftRequestDTO.EndTime))
+            {
+                return (false, "Shift overlaps with an existing shift", null);
+            }
+
             shiftRequestDTO.ShiftID = Guid.NewGuid();
             var shiftEntity = shiftRequestDTO.ToEntity();
 
@@ -56,7 +62,7 @@ namespace Workvia.Infrastructure.Services
 
             await _context.Entry(shiftEntity).Reference(s => s.Employee).LoadAsync();
 
-            return shiftEntity.ToResponseDTO();
+            return (true, string.Empty, shiftEntity.ToResponseDTO());
         }
 
         public async Task<(bool Succeeded, string Error)> UpdateShiftAsync(Guid id, ShiftRequestDTO shiftDTO)
@@ -67,6 +73,11 @@ namespace Workvia.Infrastructure.Services
             var existingShift = await _context.Shifts.FindAsync(id);
             if (existingShift == null)
                 return (false, "Shift not found");
+
+            if (await IsOverlapAsync(shiftDTO.EmployeeID, shiftDTO.StartTime, shiftDTO.EndTime, id))
+            {
+                return (false, "Shift overlaps with an existing shift");
+            }
 
             existingShift.EmployeeID = shiftDTO.EmployeeID;
             existingShift.StartTime = shiftDTO.StartTime;
@@ -92,6 +103,16 @@ namespace Workvia.Infrastructure.Services
             _context.Shifts.Remove(shift);
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        private async Task<bool> IsOverlapAsync(Guid employeeId, DateTime start, DateTime end, Guid? excludeShiftId = null)
+        {
+            return await _context.Shifts.AnyAsync(s =>
+                s.EmployeeID == employeeId &&
+                s.ShiftID != excludeShiftId &&
+                s.StartTime < end &&
+                s.EndTime > start
+            );
         }
     }
 }

@@ -1,8 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.CodeCoverage;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Workvia.Core.DTO;
 using Workvia.Core.Entities;
 using Workvia.Core.Identity;
@@ -54,9 +50,10 @@ namespace Workvia.Tests
                 var result = await service.CreateShiftAsync(requestDto);
 
                 // Assert
-                Assert.NotNull(result);
-                Assert.NotNull(result.ShiftID);
-                Assert.Equal("Test User", result.EmployeeName);
+                Assert.True(result.Succeeded);
+                Assert.NotNull(result.Shift);
+                Assert.NotNull(result.Shift.ShiftID);
+                Assert.Equal("Test User", result.Shift.EmployeeName);
             }
 
             // Assert
@@ -65,6 +62,85 @@ namespace Workvia.Tests
                 var shiftInDb = await context.Shifts.FirstOrDefaultAsync();
                 Assert.NotNull(shiftInDb);
                 Assert.Equal(employeeId, shiftInDb.EmployeeID);
+            }
+        }
+
+        [Fact]
+        public async Task CreateShiftAsync_Should_Fail_When_Overlap()
+        {
+            // Arrange
+            var dbName = Guid.NewGuid().ToString();
+            var employeeId = Guid.NewGuid();
+            var baseTime = DateTime.Now;
+
+            using (var context = GetDbContext(dbName))
+            {
+                context.Users.Add(new ApplicationUser { Id = employeeId, PersonName = "U1" });
+                context.Shifts.Add(new Shift
+                {
+                    ShiftID = Guid.NewGuid(),
+                    EmployeeID = employeeId,
+                    StartTime = baseTime.AddHours(10),
+                    EndTime = baseTime.AddHours(18)
+                });
+                await context.SaveChangesAsync();
+            }
+
+            var requestDto = new ShiftRequestDTO
+            {
+                EmployeeID = employeeId,
+                StartTime = baseTime.AddHours(17),
+                EndTime = baseTime.AddHours(20)
+            };
+
+            // Act
+            using (var context = GetDbContext(dbName))
+            {
+                var service = new ShiftService(context);
+                var result = await service.CreateShiftAsync(requestDto);
+
+                // Assert
+                Assert.False(result.Succeeded);
+                Assert.Equal("Shift overlaps with an existing shift", result.Error);
+            }
+        }
+
+        [Fact]
+        public async Task UpdateShiftAsync_Should_Fail_When_Overlap_With_Other_Shift()
+        {
+            // Arrange
+            var dbName = Guid.NewGuid().ToString();
+            var employeeId = Guid.NewGuid();
+            var baseTime = DateTime.Now;
+            var shift1Id = Guid.NewGuid();
+            var shift2Id = Guid.NewGuid();
+
+            using (var context = GetDbContext(dbName))
+            {
+                context.Users.Add(new ApplicationUser { Id = employeeId, PersonName = "U1" });
+                context.Shifts.Add(new Shift { ShiftID = shift1Id, EmployeeID = employeeId, StartTime = baseTime.AddHours(10), EndTime = baseTime.AddHours(14) });
+                context.Shifts.Add(new Shift { ShiftID = shift2Id, EmployeeID = employeeId, StartTime = baseTime.AddHours(16), EndTime = baseTime.AddHours(20) });
+
+                await context.SaveChangesAsync();
+            }
+
+            var updateDto = new ShiftRequestDTO
+            {
+                ShiftID = shift2Id,
+                EmployeeID = employeeId,
+                StartTime = baseTime.AddHours(13),
+                EndTime = baseTime.AddHours(17)
+            };
+
+            // Act
+            using (var context = GetDbContext(dbName))
+            {
+                var service = new ShiftService(context);
+                var result = await service.UpdateShiftAsync(shift2Id, updateDto);
+
+                // Assert
+                Assert.False(result.Succeeded);
+                Assert.Contains("overlaps", result.Error);
             }
         }
 

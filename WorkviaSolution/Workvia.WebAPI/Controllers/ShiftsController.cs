@@ -64,7 +64,8 @@ namespace Workvia.WebAPI.Controllers
                     return NotFound();
                 if (result.Error == "Mismatch ID")
                     return BadRequest();
-                return Problem(result.Error);
+
+                return Conflict(new { title = "Overlap Error", detail = result.Error });
             }
 
             return NoContent();
@@ -77,8 +78,14 @@ namespace Workvia.WebAPI.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ShiftResponseDTO>> PostShift(ShiftRequestDTO shiftRequestDTO)
         {
-            var createdShift = await _shiftService.CreateShiftAsync(shiftRequestDTO);
-            return CreatedAtAction(nameof(GetShiftById), new { id = createdShift.ShiftID }, createdShift);
+            var result = await _shiftService.CreateShiftAsync(shiftRequestDTO);
+
+            if (!result.Succeeded)
+            {
+                return Conflict(new { title = "Overlap Error", detail = result.Error });
+            }
+
+            return CreatedAtAction(nameof(GetShiftById), new { id = result.Shift!.ShiftID }, result.Shift);
         }
 
         /// <summary>
