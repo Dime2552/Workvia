@@ -13,7 +13,7 @@ export class Login {
   loginForm: FormGroup;
   isLoginFormSubmited: boolean = false;
 
-  constructor(private authService: AuthenticationService, private router: Router){
+  constructor(private authService: AuthenticationService, private router: Router) {
     this.loginForm = new FormGroup({
       email: new FormControl(null, [Validators.required]),
       password: new FormControl(null, [Validators.required])
@@ -33,15 +33,10 @@ export class Login {
 
     this.authService.postLogin(this.loginForm.value).subscribe({
       next: (response: any) => {
-        console.log(response);
-
         this.isLoginFormSubmited = false;
-
-
         this.authService.currentUserName = response.personName;
 
-
-        localStorage["token"] = response.token;
+        localStorage.setItem("authData", JSON.stringify(response));
 
         if (this.authService.isAdmin()) {
           this.router.navigate(['/admin']);
@@ -51,12 +46,10 @@ export class Login {
 
         this.loginForm.reset();
       },
-
       error: (error) => {
         console.log(error);
       },
-
-      complete: () => {}
-    })
+      complete: () => { }
+    });
   }
 }

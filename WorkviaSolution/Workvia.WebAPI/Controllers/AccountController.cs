@@ -54,8 +54,21 @@ namespace Workvia.WebAPI.Controllers
 
             var result = await _authService.LoginAsync(loginDTO);
 
-            if (result.Succeeded)
+            if (result.Succeeded && result.AuthResponse != null)
+            {
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Expires = result.AuthResponse.Expiration
+                };
+                Response.Cookies.Append("access_token", result.AuthResponse.Token!, cookieOptions);
+
+                result.AuthResponse.Token = null;
+
                 return Ok(result.AuthResponse);
+            }
 
             return BadRequest(result.Error);
         }
@@ -69,6 +82,14 @@ namespace Workvia.WebAPI.Controllers
         public async Task<IActionResult> GetLogout()
         {
             await _authService.LogoutAsync();
+
+            Response.Cookies.Delete("access_token", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None
+            });
+
             return NoContent();
         }
 

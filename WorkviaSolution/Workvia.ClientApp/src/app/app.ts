@@ -11,19 +11,19 @@ import { Router } from '@angular/router';
 export class App {
   protected readonly title = signal('Workvia');
 
-  constructor(public authService: AuthenticationService, private router: Router) {}
+  constructor(public authService: AuthenticationService, private router: Router) { }
 
-  OnLogoutClicked(){
+  OnLogoutClicked() {
     this.authService.getLogout().subscribe({
       next: () => {
         this.authService.currentUserName = null;
-        localStorage.removeItem("token");
+        localStorage.removeItem("authData");
         this.router.navigate(['/login']);
       },
       error: (error) => {
         console.log(error);
       },
-      complete: () => {}
+      complete: () => { }
     })
   }
 }

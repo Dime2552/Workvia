@@ -1,10 +1,9 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { RegisterUser } from '../models/register-user';
 import { User } from '../models/user';
 import { Observable } from 'rxjs';
 import { LoginUser } from '../models/login-user';
-import { jwtDecode } from 'jwt-decode';
 
 const API_BASE_URL: string = "https://localhost:5267/api/account";
 
@@ -29,40 +28,25 @@ export class AuthenticationService {
     return this.httpClient.get<string>(`${API_BASE_URL}/logout`);
   }
 
-  public getToken(): string | null {
-    return localStorage["token"];
+  public getAuthData(): any {
+    const data = localStorage.getItem("authData");
+    return data ? JSON.parse(data) : null;
   }
 
   public getUserId(): string {
-    const token = this.getToken();
-    if (!token) return "";
-
-    try {
-      const decoded: any = jwtDecode(token);
-      const id = decoded.sub || decoded['sub'];
-      
-      return id;
-    } catch (e) {
-      return "";
-    }
+    const data = this.getAuthData();
+    return data ? data.userId : "";
   }
 
   public isLoggedIn(): boolean {
-    const token = this.getToken();
-    return !!token;
+    const data = this.getAuthData();
+    if (!data) return false;
+
+    return new Date(data.expiration) > new Date();
   }
 
   public isAdmin(): boolean {
-    const token = this.getToken();
-    if (!token) return false;
-
-    try {
-      const decoded: any = jwtDecode(token);
-      const role = decoded.role || decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-      
-      return role === 'Admin';
-    } catch (e) {
-      return false;
-    }
+    const data = this.getAuthData();
+    return data ? data.role === 'Admin' : false;
   }
 }
