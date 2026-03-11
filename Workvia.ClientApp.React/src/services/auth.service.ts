@@ -7,6 +7,11 @@ export const AuthService = {
     return response.data;
   },
 
+  register: async (userData: any): Promise<any> => {
+    const response = await api.post('/account/register', userData);
+    return response.data;
+  },
+
   logout: async (): Promise<void> => {
     await api.get('/account/logout');
     localStorage.removeItem("authData");
@@ -31,5 +36,10 @@ export const AuthService = {
   getCurrentUserName: (): string | null => {
     const data = AuthService.getAuthData();
     return data ? data.personName : null;
+  },
+
+  getUserId: (): string | null => {
+    const data = AuthService.getAuthData();
+    return data ? data.userId : null;
   }
 };
