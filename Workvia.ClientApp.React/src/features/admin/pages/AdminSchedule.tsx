@@ -101,6 +101,12 @@ export default function AdminSchedule() {
                     height = "auto"
                     slotDuration = '01:00:00'
                     firstDay = {1}
+                    allDaySlot = {false}
+                    slotLabelFormat = {{
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    }}
                     eventTimeFormat = {{
                         hour: '2-digit',
                         minute: '2-digit',

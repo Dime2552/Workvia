@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import Modal from '../../../components/Modal';
 import { UserService } from '../../../services/user.service';
 import type { User } from '../../../types/user';
 import type { ShiftRequest } from '../../../types/shift';
+import DateTimePicker from '../../../components/DateTimePicker';
 
 interface ShiftCreateModalProps {
   show: boolean;
@@ -12,7 +13,7 @@ interface ShiftCreateModalProps {
 }
 
 export default function ShiftCreateModal({ show, onClose, onSuccess }: ShiftCreateModalProps) {
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<ShiftRequest>();
+  const { register, handleSubmit, formState: { errors }, reset, control } = useForm<ShiftRequest>();
   const [employees, setEmployees] = useState<User[]>([]);
 
   useEffect(() => {
@@ -54,21 +55,39 @@ export default function ShiftCreateModal({ show, onClose, onSuccess }: ShiftCrea
           </div>
 
           <div className="mb-3">
-            <label className="form-label">Start Time</label>
-            <input 
-              type="datetime-local" 
-              className={`form-control ${errors.startTime ? 'is-invalid' : ''}`}
-              {...register('startTime', { required: 'Start time is required' })}
+            <Controller
+              control={control}
+              name="startTime"
+              rules={{ required: "Choose start date & time" }}
+              render={({ field: { onChange, value }, fieldState: { error } }) => (
+                <>
+                  <DateTimePicker 
+                    label="Start Time" 
+                    selected={value ? new Date(value) : null} 
+                    onChange={(date) => onChange(date?.toISOString())} 
+                  />
+                  {error && <div className="text-danger small">{error.message}</div>}
+                </>
+              )}
             />
              {errors.startTime && <div className="invalid-feedback">{errors.startTime.message}</div>}
           </div>
 
           <div className="mb-3">
-            <label className="form-label">End Time</label>
-            <input 
-              type="datetime-local" 
-              className={`form-control ${errors.endTime ? 'is-invalid' : ''}`}
-              {...register('endTime', { required: 'End time is required' })}
+            <Controller
+              control={control}
+              name="endTime"
+              rules={{ required: "Choose end date & time" }}
+              render={({ field: { onChange, value }, fieldState: { error } }) => (
+                <>
+                  <DateTimePicker 
+                    label="End Time" 
+                    selected={value ? new Date(value) : null} 
+                    onChange={(date) => onChange(date?.toISOString())} 
+                  />
+                  {error && <div className="text-danger small">{error.message}</div>}
+                </>
+              )}
             />
              {errors.endTime && <div className="invalid-feedback">{errors.endTime.message}</div>}
           </div>
