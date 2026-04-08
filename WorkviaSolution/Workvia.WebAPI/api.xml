@@ -53,6 +53,21 @@
             <param name="email"></param>
             <returns></returns>
         </member>
+        <member name="M:Workvia.WebAPI.Controllers.NotificationsController.GetNotifications">
+            <summary>
+            Get all notifications (For all users)
+            </summary>
+        </member>
+        <member name="M:Workvia.WebAPI.Controllers.NotificationsController.PostNotification(Workvia.Core.DTO.Notifications.NotificationCreateDTO)">
+            <summary>
+            Create new notification (Only for Admins)
+            </summary>
+        </member>
+        <member name="M:Workvia.WebAPI.Controllers.NotificationsController.DeleteNotification(System.Guid)">
+            <summary>
+            Delete notification by id (Only for Admins)
+            </summary>
+        </member>
         <member name="M:Workvia.WebAPI.Controllers.ShiftsController.GetShifts">
             <summary>
             Get all shifts

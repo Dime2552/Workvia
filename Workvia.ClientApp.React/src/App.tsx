@@ -11,6 +11,7 @@ import UserPreferences from './features/shared/pages/UserPreferences';
 import AdminSchedule from './features/admin/pages/AdminSchedule';
 import EmployeeSchedule from './features/employee/pages/EmployeeSchedule';
 import AdminDashboard from './features/admin/pages/AdminDashboard';
+import Notifications from './features/shared/pages/Notifications';
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
                 <Route path="dashboard" element={<AdminDashboard />} />
                 <Route path="users" element={<Users />} />
                 <Route path="schedule" element={<AdminSchedule />} />
+                <Route path="notifications" element={<Notifications />} />
                 <Route path="preferences" element={<UserPreferences />} />
                 <Route index element={<Navigate to="dashboard" replace />} />
               </Route>
@@ -37,6 +39,7 @@ export default function App() {
             {/* Employee */}
             <Route path="/employee" element={<EmployeeLayout />}>
               <Route path="schedule" element={<EmployeeSchedule />} />
+              <Route path="notifications" element={<Notifications />} />
               <Route path="preferences" element={<UserPreferences />} />
               <Route index element={<Navigate to="schedule" replace />} />
             </Route>

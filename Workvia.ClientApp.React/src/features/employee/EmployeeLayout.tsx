@@ -15,6 +15,10 @@ export default function EmployeeLayout() {
             <i className="bi bi-calendar-week me-2"></i> Schedule
           </NavLink>
 
+          <NavLink to="/employee/notifications" className="list-group-item list-group-item-action list-group-item-dark bg-dark text-white p-3">
+            <i className="bi bi-bell me-2"></i> Notifications
+          </NavLink>
+
           <NavLink to="/employee/preferences" className="list-group-item list-group-item-action list-group-item-dark bg-dark text-white p-3">
             <i className="bi bi-gear me-2"></i> Preferences
           </NavLink>

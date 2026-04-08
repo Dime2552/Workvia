@@ -13,6 +13,8 @@ namespace Workvia.Infrastructure.DatabaseContext
 
         public virtual DbSet<Shift> Shifts { get; set; }
 
+        public virtual DbSet<Notification> Notifications { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

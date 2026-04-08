@@ -23,6 +23,10 @@ export default function AdminLayout() {
             <i className="bi bi-calendar-week me-2"></i> Shifts
           </NavLink>
 
+          <NavLink to="/admin/notifications" className="list-group-item list-group-item-action list-group-item-dark bg-dark text-white p-3">
+            <i className="bi bi-bell me-2"></i> Notifications
+          </NavLink>
+
           <NavLink to="/admin/preferences" className="list-group-item list-group-item-action list-group-item-dark bg-dark text-white p-3">
             <i className="bi bi-gear me-2"></i> Preferences
           </NavLink>
