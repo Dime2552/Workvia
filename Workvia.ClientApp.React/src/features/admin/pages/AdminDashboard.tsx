@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Bar, Doughnut } from 'react-chartjs-2';
 import { StatisticsService } from '../../../services/statistics.service';
+import { ReportService } from '../../../services/report.service';
+import { toast } from 'react-toastify';
+import ReportGenerateModal from '../components/ReportGenerateModal';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend);
 
@@ -9,6 +12,7 @@ export default function AdminDashboard() {
   const [totalHours, setTotalHours] = useState(0);
   const [barData, setBarData] = useState<any>({ labels: [], datasets: [] });
   const [pieData, setPieData] = useState<any>({ labels: [], datasets: [] });
+  const [showReportModal, setShowReportModal] = useState(false);
 
   useEffect(() => {
     const end = new Date();
@@ -32,11 +36,28 @@ export default function AdminDashboard() {
     });
   }, []);
 
+  const handleGenerateReport = async (start: Date, end: Date) => {
+    try {
+      await ReportService.downloadExcelReport(start, end);
+      toast.success("Report downloaded successfully!");
+      setShowReportModal(false);
+    } catch (error) {
+      console.error("Failed to download report", error);
+      toast.error("Failed to generate report.");
+    }
+  };
+
   return (
     <div className="container-fluid">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="fw-bold">Dashboard</h2>
-        <span className="text-muted small">Last 30 days statistics</span>
+        <div>
+            <h2 className="fw-bold mb-0">Dashboard</h2>
+            <span className="text-muted small">Last 30 days statistics</span>
+        </div>
+
+        <button className="btn btn-success" onClick={() => setShowReportModal(true)}>
+            <i className="bi bi-file-earmark-spreadsheet me-2"></i>Generate Report
+        </button>
       </div>
 
       <div className="row mb-4">
@@ -66,6 +87,12 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+
+      <ReportGenerateModal 
+        show={showReportModal} 
+        onClose={() => setShowReportModal(false)} 
+        onSuccess={handleGenerateReport} 
+      />
     </div>
   );
 }

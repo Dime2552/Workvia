@@ -68,6 +68,11 @@
             Delete notification by id (Only for Admins)
             </summary>
         </member>
+        <member name="M:Workvia.WebAPI.Controllers.ReportsController.GetExcelReport(System.DateTime,System.DateTime)">
+            <summary>
+            Generate Excel report by period
+            </summary>
+        </member>
         <member name="M:Workvia.WebAPI.Controllers.ShiftsController.GetShifts">
             <summary>
             Get all shifts
