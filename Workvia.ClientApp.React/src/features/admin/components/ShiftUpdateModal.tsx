@@ -6,21 +6,23 @@ import type { User } from '../../../types/user';
 import type { Shift, ShiftRequest } from '../../../types/shift';
 import DateTimePicker from '../../../components/DateTimePicker';
 
+const toLocalISOString = (date: Date | null) => {
+  if (!date) return null;
+  const tzOffset = date.getTimezoneOffset() * 60000;
+  return new Date(date.getTime() - tzOffset).toISOString().slice(0, 19);
+};
+
+const keepLocalTime = (dateString: string) => {
+  if (!dateString) return '';
+  return dateString.endsWith('Z') ? dateString.slice(0, -1) : dateString;
+};
+
 interface ShiftUpdateModalProps {
   show: boolean;
   shift: Shift | null;
   onClose: () => void;
   onSuccess: (action: 'update' | 'delete', data?: ShiftRequest) => void;
 }
-
-// Helper to format date for datetime-local input
-const formatDateForInput = (dateString: string) => {
-  if (!dateString) return '';
-  const date = new Date(dateString);
-  const offset = date.getTimezoneOffset();
-  const localDate = new Date(date.getTime() - (offset * 60000));
-  return localDate.toISOString().slice(0, 16);
-};
 
 export default function ShiftUpdateModal({ show, shift, onClose, onSuccess }: ShiftUpdateModalProps) {
   const { register, handleSubmit, formState: { errors }, reset, setValue, control } = useForm<ShiftRequest>();
@@ -31,8 +33,8 @@ export default function ShiftUpdateModal({ show, shift, onClose, onSuccess }: Sh
       UserService.getEmployees().then(setEmployees);
       if (shift) {
         setValue('employeeId', shift.employeeID);
-        setValue('startTime', formatDateForInput(shift.startTime));
-        setValue('endTime', formatDateForInput(shift.endTime));
+        setValue('startTime', keepLocalTime(shift.startTime));
+        setValue('endTime', keepLocalTime(shift.endTime));
       }
     }
   }, [show, shift, setValue]);
@@ -86,7 +88,7 @@ export default function ShiftUpdateModal({ show, shift, onClose, onSuccess }: Sh
                   <DateTimePicker 
                     label="Start Time" 
                     selected={value ? new Date(value) : null} 
-                    onChange={(date) => onChange(date?.toISOString())} 
+                    onChange={(date) => onChange(toLocalISOString(date))} 
                   />
                   {error && <div className="text-danger small">{error.message}</div>}
                 </>
@@ -105,7 +107,7 @@ export default function ShiftUpdateModal({ show, shift, onClose, onSuccess }: Sh
                   <DateTimePicker 
                     label="End Time" 
                     selected={value ? new Date(value) : null} 
-                    onChange={(date) => onChange(date?.toISOString())} 
+                    onChange={(date) => onChange(toLocalISOString(date))} 
                   />
                   {error && <div className="text-danger small">{error.message}</div>}
                 </>

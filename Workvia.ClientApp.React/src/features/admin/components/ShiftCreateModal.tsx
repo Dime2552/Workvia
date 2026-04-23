@@ -6,6 +6,13 @@ import type { User } from '../../../types/user';
 import type { ShiftRequest } from '../../../types/shift';
 import DateTimePicker from '../../../components/DateTimePicker';
 
+const toLocalISOString = (date: Date | null) => {
+  if (!date) return null;
+  const tzOffset = date.getTimezoneOffset() * 60000;
+  const localISOTime = new Date(date.getTime() - tzOffset).toISOString().slice(0, 19);
+  return localISOTime;
+};
+
 interface ShiftCreateModalProps {
   show: boolean;
   onClose: () => void;
@@ -64,7 +71,7 @@ export default function ShiftCreateModal({ show, onClose, onSuccess }: ShiftCrea
                   <DateTimePicker 
                     label="Start Time" 
                     selected={value ? new Date(value) : null} 
-                    onChange={(date) => onChange(date?.toISOString())} 
+                    onChange={(date) => onChange(toLocalISOString(date))} 
                   />
                   {error && <div className="text-danger small">{error.message}</div>}
                 </>
@@ -83,7 +90,7 @@ export default function ShiftCreateModal({ show, onClose, onSuccess }: ShiftCrea
                   <DateTimePicker 
                     label="End Time" 
                     selected={value ? new Date(value) : null} 
-                    onChange={(date) => onChange(date?.toISOString())} 
+                    onChange={(date) => onChange(toLocalISOString(date))} 
                   />
                   {error && <div className="text-danger small">{error.message}</div>}
                 </>
