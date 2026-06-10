@@ -48,7 +48,6 @@ namespace Workvia.Infrastructure.Services
 
         public async Task<(bool Succeeded, string Error, ShiftResponseDTO? Shift)> CreateShiftAsync(ShiftRequestDTO shiftRequestDTO)
         {
-            // Перевірка на перетин
             if (await IsOverlapAsync(shiftRequestDTO.EmployeeID, shiftRequestDTO.StartTime, shiftRequestDTO.EndTime))
             {
                 return (false, "Shift overlaps with an existing shift", null);
